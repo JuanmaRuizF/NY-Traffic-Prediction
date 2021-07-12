@@ -1,0 +1,25 @@
+.NY-LocalTime,
+.dateNow {
+    text-align: center;
+}
+
+.goodStatus {
+    text-align: center;
+    background-color: green;
+}
+
+.badStatus {
+    width: 20%;
+    display: table;
+    margin: 0 auto;
+    text-align: center;
+    background-color: rgb(209, 52, 52);
+}
+
+.goodStatus {
+    width: 20%;
+    display: table;
+    margin: 0 auto;
+    text-align: center;
+    background-color: rgb(23, 172, 55);
+}
