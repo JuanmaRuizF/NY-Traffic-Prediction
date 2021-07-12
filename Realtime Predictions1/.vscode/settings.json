@@ -1,0 +1,3 @@
+{
+    "python.analysis.extraPaths":["./realtime_apis", "./historical_apis" ]
+}
