@@ -1,4 +1,4 @@
-import { Bar} from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import React, { useState, useEffect } from 'react';
 import data from '../Data/TrafficJSON.json';
 import TrafficHour from './TrafficHour'
@@ -100,7 +100,7 @@ function GraficaHora(props) {
             },
             title: {
             display: true,
-            text: 'Time:  ' + selectedHour.selectedhour + ':00',
+            text: 'Hora:  ' + selectedHour.selectedhour.substring(0,16),
             },
         },
     });
@@ -108,21 +108,21 @@ function GraficaHora(props) {
     if(condition1){
         return (
             <>
-            <h3 className="centerTitle"> Visualize traffic per hour</h3>
+            <h3 className="centerTitle"> Visualiza el tráfico por hora</h3>
             <div className="BarExample">
                 <Bar
                     data={barData}  
                     options={barOptions} />
             </div>
-            <p>Y axis displays all the streets that are measured. The X axis represents relative speed of the cars in that street at a given time. For example, if a car crosses a street at 30mph in a street
-                that has maximum speed of 60mph, the relative speed will be of 0.5. The bars have a green color when the relative speed measured/predicted is greater than 0.5, representing that the traffic status
-                is good. All the streets with relative speed below 0.5 will have a red bar representing a bad status of traffic.
+            <p>El eje Y muestra todas las calles de las que se tienen mediciones. El eje X representa la velocidad relativa de los coches en esa calle en la hora seleccionada. Por ejemplo, si un automóvil cruza una calle a 30 km/h en una calle
+                que tiene una velocidad máxima de 60 km/h, la velocidad relativa será de 0,5. Las barras tienen un color verde cuando la velocidad relativa medida / prevista es igual o superior a 0,5, lo que representa que el estado del tráfico
+                es bueno. Todas las calles con velocidad relativa inferior a 0,5 tendrán una barra roja que representa un mal estado del tráfico.
                 </p>
             <div className="centrado">
             <Button variant="primary" size="md" onClick={() => 
                 setcondition1(false)
 
-                }>Select another hour</Button>{' '}
+                }>Selecciona otra hora</Button>{' '}
             </div>
             </>
         );

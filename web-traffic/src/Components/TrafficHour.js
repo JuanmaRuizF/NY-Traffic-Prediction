@@ -37,7 +37,7 @@ function TrafficHour() {
     return (
       <div>
         <div>
-          <h3 className="centerTitle"> Visualize traffic per hour</h3>
+          <h3 className="centerTitle"> Visualiza el tráfico por hora</h3>
           <Form className="mt-5">
             <Form.Group controlId="exampleForm.SelectCustom">
               <Form.Control
@@ -49,7 +49,7 @@ function TrafficHour() {
               >
                 {options.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {s.substring(0,16)}
                   </option>
                 ))}
               </Form.Control>
@@ -63,7 +63,7 @@ function TrafficHour() {
             size="md"
             onClick={() => setCondition1(false)}
           >
-            Check Traffic for this Time
+            Comprueba el tráfico para la hora seleccionada
           </Button>{" "}
         </div>
       </div>

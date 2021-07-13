@@ -10,10 +10,20 @@ import LineGraph from './StreetLineChart'
 
 const dataToday = data.Data;
 
+function getData(){
+    
+    var return_array = []
+    dataToday.map(s => (
+        return_array.push(s["street"])
+    ))
+    return return_array
+}
+
 function Body(){
 
+    var options = getData()
 
-    const [selectedStreet, setSelectedStreet] = useState("11th ave n ganservoort - 12th ave @ 40th st"); //CAMBIAR EL VALOR POR DEFECTO DE ESTA CALLE
+    const [selectedStreet, setSelectedStreet] = useState(options[0]); //CAMBIAR EL VALOR POR DEFECTO DE ESTA CALLE
 
     const [condition1, setcondition1]  = useState(true); 
 
@@ -21,7 +31,7 @@ function Body(){
     if(condition1 ){
         return (
             <div className="mainContainer">
-                <h3 className="centerTitle"> Visualize traffic per street</h3>
+                <h3 className="centerTitle"> Visualiza el tráfico por calle</h3>
 
                 <Form className="mt-5">
                     <Form.Group controlId="exampleForm.SelectCustom">
@@ -45,7 +55,7 @@ function Body(){
                     <Button variant="primary" size="md" onClick={() => 
                     setcondition1(false)
 
-                    }>Check Traffic for this Street</Button>{' '}
+                    }>Comprueba el tráfico para esta calle</Button>{' '}
 
                 </div>
     

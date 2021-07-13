@@ -38,7 +38,7 @@ function Map(){
         return(
 
             <div>
-                <h3 className="centerTitle"> Map of the predicted streets</h3>
+                <h3 className="centerTitle"> Localización de las calles con mediciones</h3>
                 <div className="centradoMapa">
                     <iframe title="mapa" src="https://www.google.com/maps/d/u/0/embed?mid=1GXf-V5fhF0FqSJ4Ogfa4SFCOu5yG0_A0" width="640" height="380"></iframe>
     
@@ -51,7 +51,7 @@ function Map(){
         return(
 
             <div>
-                <h3 className="centerTitle"> Map of the predicted streets</h3>
+                <h3 className="centerTitle"> Localización de las calles con mediciones</h3>
                 <div className="centradoMapa">
                     <iframe title="mapa" src="https://www.google.com/maps/d/u/0/embed?mid=1GXf-V5fhF0FqSJ4Ogfa4SFCOu5yG0_A0" width="340" height="180"></iframe>
     

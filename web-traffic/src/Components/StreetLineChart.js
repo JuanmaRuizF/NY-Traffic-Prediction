@@ -16,7 +16,7 @@ function getLabels(props){
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s)) {
         if(key !== "street"){
-          labels.push(key)
+          labels.push(key.substring(5,16).replace("-","/"))
         }
       }
     }
@@ -27,7 +27,7 @@ function getLabels(props){
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s)) {
         if(key !== "street"){
-          labels.push(key)
+          labels.push(key.substring(5,16).replace("-", "/"))
         }
         
       }
@@ -84,7 +84,7 @@ function ChartsPage(props){
             labels: labels,
             datasets: [
               {
-                label: "Previous Values",
+                label: "Valores Previos",
                 fill: true,
                 lineTension: 0.3,
                 backgroundColor: "rgba(225, 204,230, .3)",
@@ -105,7 +105,7 @@ function ChartsPage(props){
                 data: pastValueData
               },
               {
-                label: "Predictions",
+                label: "Predicciones",
                 fill: true,
                 lineTension: 0.3,
                 backgroundColor: "rgba(225, 204,230, .3)",
@@ -135,20 +135,21 @@ function ChartsPage(props){
         return(
           <>
           <div className="mainContainer">
-          <h3 className="centerTitle"> Visualize traffic per street</h3>
+          <h3 className="centerTitle"> Visualiza el tráfico por calle</h3>
           
           <h4 className="centerTitle">{props.streetname}</h4>
           <MDBContainer>  
               <Line data={state.dataLine} options={{ responsive: true }}/>
           </MDBContainer>
-          <p>X axis displays the time. 6 of those hours are from real recorded values in that street for that time. The other 4 hours are the prediction for the status of traffic for the next 4 hours. It uses the last 12 hours of data to make this prediction.</p>
-          <p>The Y axis represents the relative speed. For example, a 0.5 relative speed on a street of maximum 100mph means that the cars have travelled through that street at a mean of 50mph. It is considered that the status of traffic is bad when
-            the relative speed is below 0.5</p>      
+
+          <p>El eje X muestra el tiempo. Los 6 primeros valores son los valores reales registrados en esa calle para esa hora. Los otros 4 valores representan las predicciones realizadas por el modelo para las siguientes 4 horas. El modelo utiliza las últimas 12 horas de datos para realizar estas predicciones.</p>
+          <p>El eje Y representa la velocidad relativa. Por ejemplo, una velocidad relativa de 0.5 en una calle de un máximo de 100 km/h significa que los coches han viajado por esa calle a una media de 50 km/h. Se considera que el estado del tráfico es malo cuando
+            la velocidad relativa es inferior a 0,5</p>      
                 <div className="centrado">
                 <Button variant="primary" size="md" onClick={() => 
                     setcondition1(false)
 
-                    }>Select another Street</Button>{' '}
+                    }>Selecciona otra calle</Button>{' '}
                 </div>
             </div>
           </>
