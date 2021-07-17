@@ -1,42 +1,34 @@
 import React,  {useState, useEffect} from 'react';
 import '../Styles/Map.css'
 
+//este método tiene como origen el siguiente enlace: https://usehooks.com/useWindowSize/
+//sirve para controlar el tamaño de la pantalla. Será utilizado para, dependiendo del tamaño del dispositivo, hacer que el mapa se vea en pequeño o grande
 function useWindowSize() {
-    // Initialize state with undefined width/height so server and client renders match
-    // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
     const [windowSize, setWindowSize] = useState({
       width: undefined,
       height: undefined,
     });
     useEffect(() => {
-      // Handler to call on window resize
       function handleResize() {
-        // Set window width/height to state
         setWindowSize({
           width: window.innerWidth,
           height: window.innerHeight,
         });
       }
-      // Add event listener
       window.addEventListener("resize", handleResize);
-      // Call handler right away so state gets updated with initial window size
       handleResize();
-      // Remove event listener on cleanup
       return () => window.removeEventListener("resize", handleResize);
-    }, []); // Empty array ensures that effect is only run on mount
+    }, []); 
     return windowSize;
   }
 
 
-
+//este componente es informativo. Muestra un mapa creado en Google My Maps con la localización de las calles de medición.
+//hace uso del método useWindowSize() para renderizar mapa en menor tamaño si el tamaño de la pantalla es menor a 800px
 function Map(){
-    
     const size = useWindowSize();
-
     if (size["width"] > 800) {
-
         return(
-
             <div>
                 <h3 className="centerTitle"> Localización de las calles con mediciones</h3>
                 <div className="centradoMapa">
@@ -47,7 +39,6 @@ function Map(){
     
         );
     } else {
-        console.log("holaaa")
         return(
 
             <div>
@@ -67,27 +58,3 @@ function Map(){
 export default Map;
 
 
-
-
-// function Map(){
-    
-
-
-
-//       return(
-
-//           <div>
-//               <h3 className="centerTitle"> Map of the predicted streets</h3>
-//               <div className="centradoMapa">
-//                   <iframe className="mapa"title="mapa" src="https://www.google.com/maps/d/u/0/embed?mid=1GXf-V5fhF0FqSJ4Ogfa4SFCOu5yG0_A0" width="640" height="380"></iframe>
-  
-//               </div>
-//           </div>
-  
-//       );
-  
-
-  
-// }
-
-// export default Map;

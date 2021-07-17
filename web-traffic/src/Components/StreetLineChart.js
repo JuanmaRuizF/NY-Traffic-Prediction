@@ -8,7 +8,8 @@ import TrafficStreet from './TrafficStreet'
 const predictions = data.Data
 const olderValues = data.RealValues
 
-
+//esta función tiene como objetivo recoger todas las horas que se encuentren en el JSON para la calle seleccionada. Serán utilizadas como eje X en la gráfica
+//además, se cambia el formato de la fecha y hora para ser más sencilla de ver
 function getLabels(props){
   var labels = []
 
@@ -22,7 +23,6 @@ function getLabels(props){
     }
     return null
   })
-
   predictions.map(s => {
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s)) {
@@ -37,6 +37,7 @@ function getLabels(props){
   return labels
 }
 
+//recoge todos los datos pasados del JSON cuya calle sea igual a la seleccionada en el menú
 function getPastValueData(props){
   var pastValueData = []
 
@@ -53,9 +54,9 @@ function getPastValueData(props){
   return pastValueData
 }
 
+//este método hace lo mismo que getPastValueData() pero para los valores del JSON de las predicciones para la calle
+//el parámetro lastValue es utilizado para unir el último valor del pasado con el valor de las predicciones
 function getPredictionData(props, lastValue){
-  // var predictionData = [null, null, null, null, null]
-
   var predictionData = [null, null, null, null, null, lastValue]
   predictions.map(s => {
     if(s["street"] === props.streetname){
@@ -71,15 +72,17 @@ function getPredictionData(props, lastValue){
   return predictionData
 }
 
+//este método muestra la gráfica de la calle seleccionada
 function ChartsPage(props){
   
-  const [condition1, setcondition1]  = useState(true); 
-    var labels = getLabels(props)
+  const [condition1, setcondition1]  = useState(true); //variable de control de renderizado para los componentes
+    var labels = getLabels(props) //listado con las horas que haya en el JSON para la calle seleccionada
 
-    var pastValueData = getPastValueData(props)
-    var predictionData = getPredictionData(props, pastValueData[pastValueData.length-1])
+    var pastValueData = getPastValueData(props) //datos pasados que haya en el JSON para la calle seleccionada
+    var predictionData = getPredictionData(props, pastValueData[pastValueData.length-1]) //predicciones del JSON para la calle seleccionada. 
+                                                                                        // Además, se añade el último valor de los pasados para que las líneas en la gráfica aparezcan unidas
 
-    const [state,] = useState({
+    const [state,] = useState({ //configuración de la gráfica
         dataLine: {
             labels: labels,
             datasets: [
@@ -130,8 +133,7 @@ function ChartsPage(props){
         }
     });
 
-    console.log(props.streetname)
-      if(condition1){
+      if(condition1){ //renderizado de la gráfica con los valores de la calle seleccionada
         return(
           <>
           <div className="mainContainer">
@@ -154,7 +156,7 @@ function ChartsPage(props){
             </div>
           </>
         );
-      }else{
+      }else{  //se renderiza el menú para seleccionar las calles
         return(
           <TrafficStreet></TrafficStreet>
         )

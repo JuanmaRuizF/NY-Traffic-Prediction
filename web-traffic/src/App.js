@@ -5,6 +5,9 @@ import Map from './Components/Map'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LocalTime from './Components/NY-Local-Time';
 
+// Archivo que tiene la estructura básica de la página web. Va llamando a cada uno de los componentes que componen la página web
+// Además, añade el fondo de la página web en los estilos.
+
 class App extends Component {
     render() {
         return (

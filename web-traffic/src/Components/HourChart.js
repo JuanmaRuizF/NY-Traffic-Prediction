@@ -5,26 +5,31 @@ import TrafficHour from './TrafficHour'
 import Button from 'react-bootstrap/Button'
 import '../Styles/GraficaCalle.css'
 
-
+//nuevamente se declaran las variables para acceder a las partes del JSON y no tener que estar escribiéndolo constantemente
 const predictions = data.Data
 const olderValues = data.RealValues
 
 
+//el componente recibe por props el valor seleccionado en el menú
+//este método tiene como objetivo tener todos los valores necesarios para aplicar al gráfico
 function graphData(props){
     var labels_street = []
 
+    //se añaden todos los nombres de las calles para utilizarlas como valores para el eje Y
     predictions.map(s => {
         labels_street.push(s["street"])
         return null;
     })
 
+    //la siguiente parte busca 2 cosas:
+    // 1) obtener todos los valores de la velocidad relativa
+    // 2) dependiendo si ese valor es mayor o menor que 0.5, su color será rojo o verde.
     var options = Object.values(Object.keys(predictions[0])) 
-
     var color_street = [];
     var data_street = []
 
-    if (options.indexOf(props.selectedhour) > -1) {
-        predictions.map(s => {
+    if (options.indexOf(props.selectedhour) > -1) {     //si la hora seleccionada se encuentra en el conjunto de predictions
+        predictions.map(s => {  
 
             data_street.push(s[props.selectedhour])
             if(s[props.selectedhour] > 0.5){    
@@ -35,7 +40,7 @@ function graphData(props){
             return null;
         })
      }else {
-        olderValues.map(s => {
+        olderValues.map(s => {  //si la hora seleccionada se encuentra en el conjunto de valores reales.
 
             data_street.push(s[props.selectedhour])
             if(s[props.selectedhour] > 0.5){    
@@ -48,12 +53,7 @@ function graphData(props){
      }
 
 
-
-    // console.log(data_street)
-    if(data_street.length === 0){
-        console.log("valores viejos")
-    }
-
+     //se retorna un array cuyos valores serán los obtenidos en el método
     var return_array = [labels_street, data_street, color_street];
 
     return return_array;
@@ -62,32 +62,29 @@ function graphData(props){
 }
 
 
-
+//este componente muestra la gráfica para la hora seleccionada por el usuario que es recibida por parámetros
 function GraficaHora(props) {
-    const [condition1, setcondition1]  = useState(true); 
+    const [condition1, setcondition1]  = useState(true); //misma condición que en el otro componente, comprueba si se debe renderizar este componente o el otro
     const [selectedHour, setSelectedHour] = useState(props)
     useEffect(() =>{
         setSelectedHour(props);
     },[props])
     
-    var graph_info = graphData(props)
+    var graph_info = graphData(props)   //los datos generados por el método co la información para hacer la gráfica
 
-    const [barData, ] = useState({
+    const [barData, ] = useState({  //se crea la gráfica utilizando los valores de la hora
         labels: graph_info[0],
         datasets: [
             {
-                // label: selectedHour.selectedhour,
                 data: graph_info[1],
                 backgroundColor: graph_info[2],
                 borderWidth: 1
             }
         ]
     });
-
+    //más configuración de la gráfica
     const [barOptions, ] = useState({
         indexAxis: 'y',
-    // Elements options apply to all of the options unless overridden in a dataset
-    // In this case, we are setting the border of each horizontal bar to be 2px wide
         elements: {
             bar: {
             borderWidth: 2,
@@ -105,7 +102,7 @@ function GraficaHora(props) {
         },
     });
 
-    if(condition1){
+    if(condition1){ //si se cumple la condición de que este es el componente a mostrar, se renderiza la gráfica con la información de la hora seleccionada
         return (
             <>
             <h3 className="centerTitle"> Visualiza el tráfico por hora</h3>
@@ -127,11 +124,11 @@ function GraficaHora(props) {
             </>
         );
     }else{
+        // si se ha presionado el botón de cargar el otro componente, se carga el del menú de selección
         return(
             <TrafficHour></TrafficHour>
         )
     }
-    // return JSX
 
 }
 

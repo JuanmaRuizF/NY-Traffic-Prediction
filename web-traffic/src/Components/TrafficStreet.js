@@ -10,8 +10,8 @@ import LineGraph from './StreetLineChart'
 
 const dataToday = data.Data;
 
+//este método recoge todas las posibles calles que haya en el JSON
 function getData(){
-    
     var return_array = []
     dataToday.map(s => (
         return_array.push(s["street"])
@@ -20,15 +20,12 @@ function getData(){
 }
 
 function Body(){
-
     var options = getData()
-
-    const [selectedStreet, setSelectedStreet] = useState(options[0]); //CAMBIAR EL VALOR POR DEFECTO DE ESTA CALLE
-
-    const [condition1, setcondition1]  = useState(true); 
+    const [selectedStreet, setSelectedStreet] = useState(options[0]); //variable que almacenará la calle seleccionada. Por defecto tiene el valor de la primera calle que se muestra en el menú
+    const [condition1, setcondition1]  = useState(true); //variable para controlar si este es el componente a renderizar o debe renderizar el componente de la gráfica. 
 
 
-    if(condition1 ){
+    if(condition1 ){    //condición por defecto, se carga el componente con el menú para seleccionar la calle en la que se desea mirar el tráfico
         return (
             <div className="mainContainer">
                 <h3 className="centerTitle"> Visualiza el tráfico por calle</h3>
@@ -37,8 +34,6 @@ function Body(){
                     <Form.Group controlId="exampleForm.SelectCustom">
                         <Form.Control as="select" onChange={ (event) =>{
                             setSelectedStreet(event.target.value)
-                            // console.log(event.target.value)
-                            // console.log(selectedStreet)
                         }} custom>
                             {dataToday.map(s => (
                                     <option key={s["street"]} value={s["street"]}>{s["street"]}</option>
@@ -49,38 +44,21 @@ function Body(){
                     </Form.Group>
                 </Form>
 
-
-
                 <div className="centrado">
                     <Button variant="primary" size="md" onClick={() => 
                     setcondition1(false)
-
                     }>Comprueba el tráfico para esta calle</Button>{' '}
-
                 </div>
-    
-
-
-    
-
             </div>
 
         );
         
-    }else {
-        console.log({selectedStreet})
+    }else { //se ha seleccionado el botón de ver el gráfico, por lo que se llama al componente pasándole en props el nombre de la calle seleccionada
         return(
             <div>
-
                 <LineGraph streetname={selectedStreet}></LineGraph>
             </div>
-
-
-            // <GraficaCalle streetname={selectedStreet}></GraficaCalle>
         )
-    
-
-        
     }
 
 }
