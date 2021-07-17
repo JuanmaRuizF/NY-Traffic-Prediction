@@ -208,7 +208,7 @@ class MainRealtimeApis:
             df.to_csv(file_path, index=False)
             # PreprocessData(file_path, hour_datetime)
             PreprocessData(file_path)
-            if (hour_datetime + timedelta(hours=3)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
+            if (hour_datetime + timedelta(hours=4)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
                 predictions(hour_datetime)
         
 
@@ -255,7 +255,7 @@ class MainRealtimeApis:
     def realtime_apis(self):
 
 
-        self.input_datetime = dt.strptime(str(self.ini_datetime), self.format_datetime) - timedelta(hours=12+3)
+        self.input_datetime = dt.strptime(str(self.ini_datetime), self.format_datetime) - timedelta(hours=12+4)
 
         self.input_datetime = str(self.input_datetime).replace(" ","T")
         #crear variable con hora actual - t desfase - input length

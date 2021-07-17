@@ -19,7 +19,7 @@ def apisRequest(start_date, months, directory):
     print(end_datetime[0:19])
 
     path_file = os.getcwd() + '/data/historical_data/merge_historical/' + directory
-    #print(path)
+
     if os.path.exists(path_file):
         print("Select another name for the folder")
         return
@@ -87,31 +87,29 @@ def mergeByDatetime(path_file, datetime):
 
 def mergeFilesWithLocation(location, output_name):
 
-    path = location #path to merge files
-    dirs = os.listdir(path) #files in that directory
+    path = location #ruta para la unión de los archivos
+    dirs = os.listdir(path) #archivos dentro del directorio de unión
     df = pd.DataFrame()
     print("*"*100)
-    #this are other folders contained in the location we want to merge the files from. This way they won't be taken into consideration when merging all files.
+    #si se encuentra algún archivo que no queramos unir, se añade a la lista de undesired_paths
     undesired_paths = [""]
     
     for file in dirs:
         if file in undesired_paths:
-            continue #if file is in the undesired_paths it will continue and not merge
+            continue #si el archivo es de los no deseados, continuará
         else:
-            file = path +"\\" + file #iterating through all the files in the directory
-            df_concat = pd.read_csv(file, low_memory=False) #opening the file to concatenate 
-            df = pd.concat([df,df_concat]) #merging the file to the dataframe
-            print("write: " + file) #validation message
+            file = path +"\\" + file #acceder al archivo en cuestión
+            df_concat = pd.read_csv(file, low_memory=False) #apertura del archivo
+            df = pd.concat([df,df_concat]) #el archivo es unido al dataframe con todos los archivos
+            print("write: " + file) #mensaje de validación para la unión
 
     print(df.shape[0]) 
 
-    #saving the file with the name given in the parameters with all the merged files
+    #el archivo de unión es guardado en el directorio dado por parámetro.
   
     output_csv =  location + output_name
     df.to_csv(output_csv, index=False)
 
 
 #apisRequest("2019-07-01T00:00:00", 23, "2019_2020_2021")
-
-# apisRequest("2019-07-01T00:00:00", 1, "2019_2020_2021AAAA")
 
