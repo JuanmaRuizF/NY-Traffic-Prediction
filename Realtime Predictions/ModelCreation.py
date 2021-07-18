@@ -59,6 +59,8 @@ def ModelCreation(number_unique_streets):
         df = df.drop(df[ df['AQI_PM2.5'] == -999.0].index)
 
         df = df.drop(df[ df['travel_time'] > 10000.0].index)
+        
+        df = df.drop(df[ df['Value_PM2.5'] == -0.30].index)
 
         timestamp_s = date_time.map(pd.Timestamp.timestamp)
 

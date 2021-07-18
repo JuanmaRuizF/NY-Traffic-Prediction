@@ -91,7 +91,7 @@ def editColumns(df):
     return df
 
 
-def PreprocessData(file_path):
+def PreprocessData(file_path, isHistorical):
 
 
     #se accede al archivo para hacer el preprocesamiento, se lee y se le aplican los distintos métodos realizados
@@ -110,24 +110,28 @@ def PreprocessData(file_path):
     df = df.groupby(['datetime', 'link_name']).mean()
     #df = df.rename(columns={'datetime': 'datetime_traffic'}) 
 
+    if isHistorical == True:
+
     #Se guarda el nuevo dataframe con los cambios en el directorio indicado.
 
-    # df.to_csv(os.getcwd() + "/data/historical_data/historical_1_hora.csv", index=True)
+        df.to_csv(os.getcwd() + "/data/historical_data/historical_1_hora.csv", index=True)
+
 
     # df.to_csv(os.getcwd() + "/data/historical_data/pruebas_junio.csv", index=True)
+    else:
 
 
-    file_save = os.getcwd() + "/data/realtime_data/merge1.csv"
+        file_save = os.getcwd() + "/data/realtime_data/merge1.csv"
 
-    
-    open_file = pd.read_csv(file_save, low_memory=False)
+        
+        open_file = pd.read_csv(file_save, low_memory=False)
 
-    #open_file = open_file.rename(columns={'datetime': 'datetime_traffic'}) 
+        #open_file = open_file.rename(columns={'datetime': 'datetime_traffic'}) 
 
-    open_file.set_index(['datetime','link_name'], inplace = True)
-    open_file = pd.concat([open_file, df])
-    print(open_file.tail(20))
-    open_file.to_csv(os.getcwd() + "/data/realtime_data/merge1.csv", index=True)
+        open_file.set_index(['datetime','link_name'], inplace = True)
+        open_file = pd.concat([open_file, df])
+        print(open_file.tail(20))
+        open_file.to_csv(os.getcwd() + "/data/realtime_data/merge1.csv", index=True)
 
 
 

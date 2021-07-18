@@ -207,7 +207,7 @@ class MainRealtimeApis:
             file_path = os.getcwd() + "/data/realtime_data/merge_hora.csv"
             df.to_csv(file_path, index=False)
             # PreprocessData(file_path, hour_datetime)
-            PreprocessData(file_path)
+            PreprocessData(file_path, False)
             if (hour_datetime + timedelta(hours=4)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
                 predictions(hour_datetime)
         
