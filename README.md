@@ -20,8 +20,8 @@ Al instalar pandas se instala automáticamente Numpy, dateutil y pytz, por lo qu
 1. Abrir la consola de comandos
 2. Navegar hacia el módulo: "cd localizacion_proyecto/NY-Traffic-Prediction/Realtime Predictions"
 3. Dependiendo de la forma en la que se quiera ejecutar el proyecto (desde la consola o VSC):
-  - Consola: "python main.py"
-  - VSC: "code ." y presionar el botón para ejecutar el proyecto en Visual Studio Code
+   - Consola: "python main.py"
+   - VSC: "code ." y presionar el botón para ejecutar el proyecto en Visual Studio Code
 
 ### web-traffic
 
