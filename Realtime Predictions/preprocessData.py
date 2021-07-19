@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.lib.function_base import delete
 import pandas as pd
-import seaborn as sns
 import tensorflow as tf
 
 mpl.rcParams['figure.figsize'] = (8, 6)
