@@ -37,7 +37,7 @@ def main():
 
         
 
-    if(len(unsaved_models) < 26):   #Si no están todos los modelos, podrán ocurrir 2 situaciones:
+    if(len(unsaved_models) > 0):   #Si no están todos los modelos, podrán ocurrir 2 situaciones:
         # 1) Falta uno o más modelos por generar. Para generarlos, hace falta utilizar los datos preprocesados, por lo que se comprueba
         # que exista el archivo con los datos preprocesados.
         if('historical_1_hora.csv' in listdir(historical_data_location)):   
