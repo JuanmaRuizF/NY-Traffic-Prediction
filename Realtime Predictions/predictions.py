@@ -236,7 +236,7 @@ def predictions(hour_datetime):
     #Para la página web
     
     JSON_location = os.getcwd()
-    JSON_location = JSON_location[0:len(JSON_location)-3] + "/web-traffic/src/Data/TrafficJSON.json"
+    JSON_location = JSON_location[0:len(JSON_location)-21] + "/web-traffic/src/Data/TrafficJSON.json"
 
 
     json.dump(JSON_dictionary, open(JSON_location,"w"))
