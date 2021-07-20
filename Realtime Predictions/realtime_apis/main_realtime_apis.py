@@ -10,6 +10,7 @@ import threading, time, os, pytz
 # # sys.path.append(".")
 from preprocessData import PreprocessData
 from predictions import predictions
+from value_comparison import value_comparison
 
 
 
@@ -208,8 +209,10 @@ class MainRealtimeApis:
             df.to_csv(file_path, index=False)
             # PreprocessData(file_path, hour_datetime)
             PreprocessData(file_path, False)
+            value_comparison(hour_datetime, False)
             if (hour_datetime + timedelta(hours=4)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
                 predictions(hour_datetime)
+                value_comparison(hour_datetime, True)
         
 
     """ fileConcatMerge:   

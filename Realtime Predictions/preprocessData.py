@@ -1,6 +1,6 @@
 import os
 import datetime
-
+from os import listdir
 import IPython
 import IPython.display
 import matplotlib as mpl
@@ -131,8 +131,4 @@ def PreprocessData(file_path, isHistorical):
         open_file = pd.concat([open_file, df])
         print(open_file.tail(20))
         open_file.to_csv(os.getcwd() + "/data/realtime_data/merge1.csv", index=True)
-
-
-
-
 
