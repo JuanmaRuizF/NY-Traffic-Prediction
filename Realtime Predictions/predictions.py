@@ -121,7 +121,7 @@ def predictions(hour_datetime):
 
     #ruta en donde se encuentran los datos para realizar las predicciones.
     # path_to_data = os.getcwd() + '/data/historical_data/pruebas_junio.csv'
-    path_to_data = os.getcwd() + '/data/historical_data/historical_1_hora.csv'
+    path_to_data = os.getcwd() + '/data/realtime_data/merge1.csv'
     data = pd.read_csv(path_to_data, low_memory=False)
 
     
