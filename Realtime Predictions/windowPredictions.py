@@ -1,33 +1,24 @@
-import os
-import datetime
-
-import IPython
-import IPython.display
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
+import numpy as np
+import os
+from datetime import timedelta as timedelta
+from datetime import datetime as dt
+
+# Make numpy values easier to read.
+np.set_printoptions(precision=3, suppress=True)
+
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-mpl.rcParams['figure.figsize'] = (8, 6)
-mpl.rcParams['axes.grid'] = False
 
-
-from keras.datasets import imdb
-from keras import models, layers, optimizers
-import numpy as np
-
-
-clear = lambda: os.system('Clear')
 
 class WindowPredictions():
-    def __init__(self, input_width,
-                data_df,
+    def __init__(self, input_width, label_width, shift,
+                data_df, 
                 label_columns=None):
         # Store the raw data.
-        self.data_df = data_df.tail(n = input_width)
+        self.data_df = data_df.tail(input_width+label_width)
 
         # Work out the label column indices.
         self.label_columns = label_columns
@@ -39,24 +30,49 @@ class WindowPredictions():
 
         # Work out the window parameters.
         self.input_width = input_width
+        self.label_width = label_width
+        self.shift = shift
+
+        self.total_window_size = input_width + shift
+
         self.input_slice = slice(0, input_width)
+        self.input_indices = np.arange(self.total_window_size)[self.input_slice]
+
+        self.label_start = self.total_window_size - self.label_width
+        self.labels_slice = slice(self.label_start, None)
+        self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
+
+    def __repr__(self):
+        return '\n'.join([
+            f'Total window size: {self.total_window_size}',
+            f'Input indices: {self.input_indices}',
+            f'Label indices: {self.label_indices}',
+            f'Label column name(s): {self.label_columns}'])
 
     def split_window(self, features):
         inputs = features[:, self.input_slice, :]
-        inputs.set_shape([None, self.input_width, None])
-        return inputs
+        labels = features[:, self.labels_slice, :]
+        if self.label_columns is not None:
+            labels = tf.stack(
+                [labels[:, :, self.column_indices[name]] for name in self.label_columns],
+                axis=-1)
 
+        # Slicing doesn't preserve static shape information, so set the shapes
+        # manually. This way the `tf.data.Datasets` are easier to inspect.
+        inputs.set_shape([None, self.input_width, None])
+        labels.set_shape([None, self.label_width, None])
+
+        return inputs, labels
 
     def make_dataset(self, data):
         data = np.array(data, dtype=np.float32)
         ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-            data=data,
-            targets=None,
-            sequence_length=self.input_width,
-            sequence_stride=1,
-            shuffle=True,
-            batch_size=1,)
-
+                data=data,
+                targets=None,
+                sequence_length=self.total_window_size,
+                sequence_stride=1,
+                shuffle=True,
+                batch_size=1,)
         ds = ds.map(self.split_window)
 
         return ds
