@@ -12,7 +12,7 @@ class HistoricalApiWeather:
         querystring = {"startDateTime":f"{start_datetime}","aggregateHours":"1","location":"Manhattan,NY,USA","endDateTime":f"{end_datetime}","unitGroup":"us","dayStartTime":"0:00:00","contentType":"csv","dayEndTime":"23:59:59","shortColumnNames":"0"}
     
         headers = {
-            'x-rapidapi-key': "ce66588787msh9d1374e0327d7e1p16b6c2jsnf3b5ba2d3a13",
+            'x-rapidapi-key': "c7e1b16b1dmsh0c4a9ad78b63e34p12d779jsn456dc589d5cd",
             'x-rapidapi-host': "visual-crossing-weather.p.rapidapi.com"
             }
         response = requests.request("GET",url, headers=headers, params = querystring)  

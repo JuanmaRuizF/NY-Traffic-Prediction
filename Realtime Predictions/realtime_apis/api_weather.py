@@ -11,9 +11,9 @@ class ApiWeather:
         datetime= start_datetime[0:-5] + "00:00"
 
         if int(datetime[8:10]) < 15:
-            key = "ce66588787msh9d1374e0327d7e1p16b6c2jsnf3b5ba2d3a13"
+            key = "28acc2b937msh74e1e2c219de97fp1f1a76jsn086758e5a568"
         else: 
-            key = "84f4ae67ffmsh805dc441742be60p1b1e4djsn6391c2e39f9a"
+            key = "083d26d099msh33aabceb4a0369dp1c359ajsnb7cc4c4c1b6f"
 
         # get data from the API
         url = "https://visual-crossing-weather.p.rapidapi.com/history"
