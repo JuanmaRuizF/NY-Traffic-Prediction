@@ -13,13 +13,14 @@ from tensorflow.keras import layers
 import json
 from datetime import timedelta as timedelta
 from datetime import datetime as dt
-
+from value_comparison import value_comparison
 mpl.rcParams['figure.figsize'] = (8, 6)
 mpl.rcParams['axes.grid'] = False
 
 
 from keras.datasets import imdb
 from keras import models, layers, optimizers
+from create_JSON import create_JSON
 import numpy as np
 
 
@@ -88,36 +89,36 @@ def denormalize_data(list_predictions, i):
 
 def predictions(hour_datetime):
 
-
-    #se declara el diccionario con las calles y su equivalente con el preprocessed data. Servirá para crear el JSON
-    linkName_dictionary = {
-        0:'FDR N - TBB E 116TH STREET - MANHATTAN TRUSS',
-        1:'LINCOLN TUNNEL E CENTER TUBE NJ - NY',
-        2:'LINCOLN TUNNEL E SOUTH TUBE - NJ - NY',
-        3:'Westside Hwy N 57th St - GWB',
-        4:'LINCOLN TUNNEL W CENTER TUBE NY - NJ',
-        5:'BQE N Atlantic Ave - MAN Bridge Manhattan Side',
-        6:'BQE N Atlantic Ave - BKN Bridge Manhattan Side',
-        7:'12th Ave N 40th - 57th St', 
-        8:'FDR N Catherine Slip - 25th St',
-        9:'Westside Hwy S GWB - 57th St',
-        10:'FDR S 63rd - 25th St',
-        11:'FDR N 25th - 63rd St', 
-        12:'12th ave @ 45th - 11 ave ganservoort st',
-        13:'12th Ave S 57th St - 45th St',
-        14:'TBB W - FDR S MANHATTAN TRUSS - E116TH STREET',
-        15:'BKN Bridge Manhattan Side - FDR N Catherine Slip',
-        16:'LINCOLN TUNNEL W NORTH TUBE NY - NJ',
-        17:'BBT W Toll Plaza - Manhattan Portal',
-        18:'BBT E Manhattan Portal - Toll Plaza',
-        19:'11th ave n ganservoort - 12th ave @ 40th st',
-        20:'FDR S 25th St - Catherine Slip',
-        21:'11th ave s ganservoort - west st @ spring st',
-        22:'FDR S Catherine Slip - BKN Bridge Manhattan Side',
-        23:'West St S Spring St - BBT Manhattan Portal outbound',
-        24:'GWB E LOWER LEVEL PLAZA - CBE E LOWER LEVEL AMSTERDAM AVE',
-        25:'QMT E Manhattan Side - Toll Plaza'
-    }
+    hour_datetime  = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") + timedelta(hours=1)
+    # #se declara el diccionario con las calles y su equivalente con el preprocessed data. Servirá para crear el JSON
+    # linkName_dictionary = {
+    #     0:'FDR N - TBB E 116TH STREET - MANHATTAN TRUSS',
+    #     1:'LINCOLN TUNNEL E CENTER TUBE NJ - NY',
+    #     2:'LINCOLN TUNNEL E SOUTH TUBE - NJ - NY',
+    #     3:'Westside Hwy N 57th St - GWB',
+    #     4:'LINCOLN TUNNEL W CENTER TUBE NY - NJ',
+    #     5:'BQE N Atlantic Ave - MAN Bridge Manhattan Side',
+    #     6:'BQE N Atlantic Ave - BKN Bridge Manhattan Side',
+    #     7:'12th Ave N 40th - 57th St', 
+    #     8:'FDR N Catherine Slip - 25th St',
+    #     9:'Westside Hwy S GWB - 57th St',
+    #     10:'FDR S 63rd - 25th St',
+    #     11:'FDR N 25th - 63rd St', 
+    #     12:'12th ave @ 45th - 11 ave ganservoort st',
+    #     13:'12th Ave S 57th St - 45th St',
+    #     14:'TBB W - FDR S MANHATTAN TRUSS - E116TH STREET',
+    #     15:'BKN Bridge Manhattan Side - FDR N Catherine Slip',
+    #     16:'LINCOLN TUNNEL W NORTH TUBE NY - NJ',
+    #     17:'BBT W Toll Plaza - Manhattan Portal',
+    #     18:'BBT E Manhattan Portal - Toll Plaza',
+    #     19:'11th ave n ganservoort - 12th ave @ 40th st',
+    #     20:'FDR S 25th St - Catherine Slip',
+    #     21:'11th ave s ganservoort - west st @ spring st',
+    #     22:'FDR S Catherine Slip - BKN Bridge Manhattan Side',
+    #     23:'West St S Spring St - BBT Manhattan Portal outbound',
+    #     24:'GWB E LOWER LEVEL PLAZA - CBE E LOWER LEVEL AMSTERDAM AVE',
+    #     25:'QMT E Manhattan Side - Toll Plaza'
+    # }
 
     #ruta en donde se encuentran los datos para realizar las predicciones.
     # path_to_data = os.getcwd() + '/data/historical_data/pruebas_junio.csv'
@@ -132,6 +133,18 @@ def predictions(hour_datetime):
 
     #Se crea una copia de los datos debido a que al iterar por cada calle, se va a acotar el dataframe por cada calle
     data_df = data
+    
+    columns = ["datetime"] #se crean todas las posibles columnas en un array que será utilizado posteriormente
+    for i in range(0,26):
+        columns.append(f"{i}-value")
+        columns.append(f"{i}-pred")
+    
+    df_append = pd.DataFrame(columns=columns)
+
+    for i in range(0,4):
+        df_append.at[i, 'datetime'] = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") + timedelta(hours=i)
+
+
     
     #Hay un total de 25 calles, por tanto se recorren dentro de un for para poder generar las predicciones para
     #cada calle 1 por 1
@@ -163,18 +176,32 @@ def predictions(hour_datetime):
         for num in range (13):
             previous_speed_values.append(round(data_df["relative_speed"].iloc[-num],3))
 
-        
+        #Se accede y se carga el modelo concreto para esta calle
+        path_model = os.getcwd() + f'/traffic_models/RNN_relative_speed_street_{i}.h5'
+        model = keras.models.load_model(path_model)
+
         #Ahora que se tienen todas las columnas, se normalizan los datos y se crea la ventana de datos que será
         #del mismo tamaño que la utilizada para generar el modelo
 
         data_df = normalize_data(data_df, i)
-        w1 = WindowPredictions(input_width=12, data_df=data_df,
+        
+
+        # Se entrena el modelo
+        window_len = 16
+        if len(data_df) >= window_len:
+            multi_window_train = WindowPredictions(input_width=12,
+                                                label_width=4,
+                                                shift=4,
+                                                data_df=data_df,
+                                                label_columns=['relative_speed'])
+            model.fit(multi_window_train.data, epochs=20)
+
+        w1 = WindowPredictions(input_width=12, label_width=0, shift=0, data_df=data_df,
                             label_columns=['relative_speed'])
 
-        
-        #Se accede y se carga el modelo concreto para esta calle
-        path_model = os.getcwd() + f'/traffic_models/RNN_relative_speed_street_{i}.h5'
-        model = keras.models.load_model(path_model)
+
+        model.save(path_model)
+
 
         #Se realizan las predicciones con la ventana de datos creada
         test_predictions = model.predict(w1.data)
@@ -185,66 +212,75 @@ def predictions(hour_datetime):
         #Estos elementos generados de las predicciones están normalizados, por tanto se desnormalizan en el método
         denormalized_predictions = denormalize_data(list_predictions, i)
 
+        prediction_iterator = 0
+        for prediction in denormalized_predictions:
+            df_append.at[prediction_iterator, f"{i}-pred"] = prediction
+            prediction_iterator = prediction_iterator+1
 
-        #Se busca el nombre de la calle analizada en el diccionario mostrado al principio del método para añadirlo al JSON
-        street_name = None
-        for key in linkName_dictionary:
-            if(key == i):
-                street_name = linkName_dictionary[i]
+    value_comparison(hour_datetime, True, df_append)
 
-
-        keys_past = []
-        for hour in range(1,7):
-            append_time = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") - timedelta(hours=hour)
-            # keys_past.append(append_time.hour)
-            keys_past.append(str(append_time))
-
-        keys_predictions = []
-        for hour in range(0,4):
-            append_time = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") + timedelta(hours=hour)
-            # keys_predictions.append(append_time.hour) 
-            keys_predictions.append(str(append_time)) 
-
-        #Datos que contiene el JSON: La calle, algunos valores de horas anteriores y las predicciones
-        append_predictions_dict = {
-            keys_predictions[0]: denormalized_predictions[0],
-            keys_predictions[1]: denormalized_predictions[1],
-            keys_predictions[2]: denormalized_predictions[2],
-            keys_predictions[3]: denormalized_predictions[3],
-            "street": street_name
-        }
-
-        append_previous_values = {
-            keys_past[5]: previous_speed_values[5],
-            keys_past[4]: previous_speed_values[4],
-            keys_past[3]: previous_speed_values[3],
-            keys_past[2]: previous_speed_values[2],
-            keys_past[1]: previous_speed_values[1],
-            keys_past[0]: previous_speed_values[0],
-            "street": street_name 
-        }
+    create_JSON()
 
 
+    #     #Se busca el nombre de la calle analizada en el diccionario mostrado al principio del método para añadirlo al JSON
+    #     street_name = None
+    #     for key in linkName_dictionary:
+    #         if(key == i):
+    #             street_name = linkName_dictionary[i]
 
-        JSON_dictionary["Data"].append(append_predictions_dict) #Se guardan los datos en el objeto que representa el JSON
+
+    #     keys_past = []
+    #     for hour in range(1,7):
+    #         append_time = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") - timedelta(hours=hour)
+    #         # keys_past.append(append_time.hour)
+    #         keys_past.append(str(append_time))
+
+    #     keys_predictions = []
+    #     for hour in range(0,4):
+    #         append_time = dt.strptime(str(hour_datetime), "%Y-%m-%d %H:%M:%S") + timedelta(hours=hour)
+    #         # keys_predictions.append(append_time.hour) 
+    #         keys_predictions.append(str(append_time)) 
+
+    #     #Datos que contiene el JSON: La calle, algunos valores de horas anteriores y las predicciones
+    #     append_predictions_dict = {
+    #         keys_predictions[0]: denormalized_predictions[0],
+    #         keys_predictions[1]: denormalized_predictions[1],
+    #         keys_predictions[2]: denormalized_predictions[2],
+    #         keys_predictions[3]: denormalized_predictions[3],
+    #         "street": street_name
+    #     }
+
+    #     append_previous_values = {
+    #         keys_past[5]: previous_speed_values[5],
+    #         keys_past[4]: previous_speed_values[4],
+    #         keys_past[3]: previous_speed_values[3],
+    #         keys_past[2]: previous_speed_values[2],
+    #         keys_past[1]: previous_speed_values[1],
+    #         keys_past[0]: previous_speed_values[0],
+    #         "street": street_name 
+    #     }
+
+
+
+    #     JSON_dictionary["Data"].append(append_predictions_dict) #Se guardan los datos en el objeto que representa el JSON
         
-        JSON_dictionary["RealValues"].append(append_previous_values)
-        print('='*100)
+    #     JSON_dictionary["RealValues"].append(append_previous_values)
+    #     print('='*100)
     
 
-    #Una vez terminado de generar predicciones para cada calle, se guardará el archivo JSON en la carpeta correspondiente
-    #Para la página web
+    # #Una vez terminado de generar predicciones para cada calle, se guardará el archivo JSON en la carpeta correspondiente
+    # #Para la página web
     
-    JSON_location = os.getcwd()
-    JSON_location = JSON_location[0:len(JSON_location)-21] + "/web-traffic/src/Data/TrafficJSON.json"
+    # JSON_location = os.getcwd()
+    # JSON_location = JSON_location[0:len(JSON_location)-21] + "/web-traffic/src/Data/TrafficJSON.json"
 
 
-    json.dump(JSON_dictionary, open(JSON_location,"w"))
+    # json.dump(JSON_dictionary, open(JSON_location,"w"))
      
     
         
 
-# predictions("2021-04-05 23:00:00")    
+# predictions("2021-07-19 17:00:00")    
     
 
 
