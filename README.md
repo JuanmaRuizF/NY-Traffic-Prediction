@@ -30,6 +30,8 @@ Si el módulo devuelve un error se debe a que se ha llegado al límite de solici
 - línea 14 y/o 16 de /NY-Traffic-Prediction/Realtime Predictions/realtime_apis/api_weather.py
 - línea 15 de /NY-Traffic-Prediction/Realtime Predictions/historical_apis/historical_api_weather.py
 
+Las claves se obtienen del siguiente enlace: https://rapidapi.com/visual-crossing-corporation-visual-crossing-corporation-default/api/visual-crossing-weather/ . Se debe registrar en la página y en la parte de "Pricing" seleccionar la opción "Basic". Una vez suscrito en la API, en el menú de "endpoints" de la página web aparece la clave generada.
+
 ### web-traffic
 
 Este módulo es la página web. Está hecha en React, por lo que se deberá tener React instalado (esto incluye instalar node.js y npm). Una vez se cuente con lo necesario para ejecutar un proyecto en React, seguir los siguientes pasos:
