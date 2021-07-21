@@ -164,10 +164,16 @@ class MainRealtimeApis:
         my_class = MainRealtimeApis()
         
         df0= pd.read_csv(merge_file_used)
-        df0["datetime"] = pd.to_datetime(df0["datetime"])
+        df0["datetime"] = pd.to_datetime(df0["datetime"],format="%Y-%m-%d %H:%M:%S")
 
         df1 = pd.read_csv(file_name)
-        df1["datetime"] = pd.to_datetime(df1["datetime"]) 
+        # print(df1["datetime"].head())
+        print(df1["datetime"].iat[0])
+        #df1["datetime"] = df1.datetime.dt.strftime('%Y-%m-%d %H:%M:%S')
+        df1["datetime"] = pd.to_datetime(df1["datetime"],format="%Y-%m-%d %H:%M:%S") 
+        # print(df1["datetime"].head())
+        print_var = df1["datetime"].iat[0]
+        print(print_var)
 
         """ 1T_W: SE REGISTRAN VALORES DE TRÁFICO
             2T_W: NO HAY VALORES DE TRÁFICO EN MERGE
@@ -175,7 +181,7 @@ class MainRealtimeApis:
         """   
         if file_name == self.traffic_file:
             df0 = pd.concat([df0, df1])
-            df0.to_csv(merge_file_used, index= False)
+            df0.to_csv(merge_file_used, index= False, date_format='%Y-%m-%d %H:%M:%S')
             return
         elif df0.shape[0] <= 0:  #es decir aun no se guardan datos de trafico
             return
@@ -194,7 +200,7 @@ class MainRealtimeApis:
             return
 
         df0 = result[1]
-        df0.to_csv(merge_file_used, index= False)
+        df0.to_csv(merge_file_used, index= False, date_format='%Y-%m-%d %H:%M:%S')
         print(result[2])
 
         ### Si se han registrado los valores para aire y clima en el rango de tiempo
@@ -206,13 +212,13 @@ class MainRealtimeApis:
             df = df0.loc[df0.datetime == hour_datetime]
             # done se guarda todos los valores de la hora en concreto donde estamos
             file_path = os.getcwd() + "/data/realtime_data/merge_hora.csv"
-            df.to_csv(file_path, index=False)
+            df.to_csv(file_path, index=False, date_format='%Y-%m-%d %H:%M:%S')
             # PreprocessData(file_path, hour_datetime)
             PreprocessData(file_path, False)
             value_comparison(hour_datetime, False)
             if (hour_datetime + timedelta(hours=4)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
                 predictions(hour_datetime)
-                value_comparison(hour_datetime, True)
+                # value_comparison(hour_datetime, True)
         
 
     """ fileConcatMerge:   
