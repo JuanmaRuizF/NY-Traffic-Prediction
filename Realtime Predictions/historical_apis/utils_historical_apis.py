@@ -2,6 +2,7 @@ import pytz
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 
+#archivo de utilidades con métodos que son accedidos por los demás métodos de recolección de datos históricos
 class UtilsHistoricalApis():
 
     def get_format_datetime(self):
