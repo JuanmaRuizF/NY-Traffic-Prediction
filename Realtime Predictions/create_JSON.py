@@ -59,8 +59,97 @@ def create_JSON():
     JSON_dictionary["Data"] = []
     JSON_dictionary["RealValues"] = []
 
-    append_predictions_dict = {}
-    append_previous_values = {}
+    for column in df.columns:
+        append_predictions_dict = {}
+        append_previous_values = {}
+
+        if column != "datetime":
+            
+            column_number = int(column[0:column.find('-')])
+            
+            column_type = column[column.find('-')+1:]
+
+            for key in linkName_dictionary:
+                if key == column_number:
+                    street_name = linkName_dictionary[column_number]
+                append_predictions_dict["street"] = street_name
+                append_previous_values["street"] = street_name
+
+
+            if column_type == "value":
+                
+                for i in range(1,13):
+                    hour = df["datetime"].iloc[-i]
+                    value = df[column].iloc[-i]
+                    if math.isnan(value) == True:
+                        continue
+                    else:
+                        append_previous_values[hour] = value
+                JSON_dictionary["RealValues"].append(append_previous_values)
+                    
+                
+            elif column_type == "pred":
+                for i in range(1,13):
+                    hour = df["datetime"].iloc[-i]
+                    value = df[column].iloc[-i]
+                    if math.isnan(value) == True:
+                        continue
+                    else:
+                        append_predictions_dict[hour] = value
+                JSON_dictionary["Data"].append(append_predictions_dict)
+        
+        
+
+
+
+            #print(column[0:column.find('-')])
+            # if column[0:column.find('-')] == "datetim"
+
+
+            # if column[0:column.find('-')] != "datetim": #para evitar la columna de "datetime"
+            #     street_number = int(column[0:column.find('-')])
+            #     print(i)
+            #     print(street_number)
+            #     if street_number == i:    #si el número de la columna hace referencia a la misma iteración del bucle
+            #         for key in linkName_dictionary:
+            #             if key == street_number:
+            #                 # print(street_number)
+            #                 # print(key)
+            #                 street_name = linkName_dictionary[street_number]
+            #                 # print(linkName_dictionary[street_number])
+            #             append_previous_values["street"] = street_name
+            #             append_predictions_dict["street"] = street_name
+
+            #         if column[2:] == "value": #comprobar si es el valor para la columna de value o prediction
+            #             for i in range(1,13):
+            #                 hour = df['datetime'].iloc[-i]
+            #                 value = df[column].iloc[-i]
+            #                 if math.isnan(value) == True:
+            #                     continue
+            #                 append_previous_values[hour] = value
+
+            #         else:
+            #             for i in range(1,13):
+            #                 hour = df['datetime'].iloc[-i]
+            #                 value = df[column].iloc[-i]
+            #                 if math.isnan(value) == True:
+            #                     continue
+            #                 append_predictions_dict[hour] = value
+
+    # JSON_dictionary["Data"].append(append_predictions_dict) #Se guardan los datos en el objeto que representa el JSON
+    
+    # JSON_dictionary["RealValues"].append(append_previous_values)
+    JSON_location = os.getcwd()
+    #JSON_location = JSON_location + "/TrafficJSON.json"
+    JSON_location = JSON_location[0:len(JSON_location)-21] + "/web-traffic/src/Data/TrafficJSON.json"
+
+
+    json.dump(JSON_dictionary, open(JSON_location,"w"))
+    return
+
+
+
+
 
     for column in df.columns:
         #print(column)
