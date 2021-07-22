@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TrafficStreet from './Components/TrafficStreet';
 import TrafficHour from './Components/TrafficHour'
+import ComparisonMenu from './Components/ComparisonMenu'
 import Map from './Components/Map'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LocalTime from './Components/NY-Local-Time';
@@ -16,6 +17,7 @@ class App extends Component {
                     <LocalTime></LocalTime>                  
                     <TrafficHour></TrafficHour>
                     <TrafficStreet></TrafficStreet>
+                    <ComparisonMenu></ComparisonMenu>
                     <Map></Map>
 
                 </div>
