@@ -24,12 +24,13 @@ function graphData(props){
     //la siguiente parte busca 2 cosas:
     // 1) obtener todos los valores de la velocidad relativa
     // 2) dependiendo si ese valor es mayor o menor que 0.5, su color será rojo o verde.
-    var options = Object.values(Object.keys(predictions[0])) 
+    // var options = Object.values(Object.keys(predictions[0])) 
+    var options = Object.values(Object.keys(olderValues[0])) 
     var color_street = [];
     var data_street = []
 
-    if (options.indexOf(props.selectedhour) > -1) {     //si la hora seleccionada se encuentra en el conjunto de predictions
-        predictions.map(s => {  
+    if (options.indexOf(props.selectedhour) > -1) {     //si la hora seleccionada se encuentra en el conjunto de valores reales
+        olderValues.map(s => {  
 
             data_street.push(s[props.selectedhour])
             if(s[props.selectedhour] > 0.5){    
@@ -40,8 +41,7 @@ function graphData(props){
             return null;
         })
      }else {
-        olderValues.map(s => {  //si la hora seleccionada se encuentra en el conjunto de valores reales.
-
+        predictions.map(s => {  //si la hora seleccionada se encuentra en el conjunto de predicciones
             data_street.push(s[props.selectedhour])
             if(s[props.selectedhour] > 0.5){    
                 color_street.push('rgba(22, 191, 37, 22)')

@@ -15,20 +15,30 @@ function getOptions() {
   var options_predictions = Object.values(Object.keys(predictions[0]));
 
   var options_older_values = Object.keys(olderValues[0]);
+  var return_array = []
 
+  for (var i in options_older_values){
+    if(options_older_values[i].localeCompare("street") === 0){
+      continue
+    }else{
+      return_array.push(options_older_values[i])
+    }
 
-  for (var i in options_predictions) {
-    options_older_values.push(options_predictions[i]);  //se añaden las horas 
   }
 
-  //en este momento se han añadido todas las horas a la lista, pero hay 2 instancias en las que aparece "street", por lo que hay que eliminarlas
-  var index = options_older_values.indexOf("street");
-  while (index > 0) {
-    options_older_values.splice(index, 1); 
-    index = options_older_values.indexOf("street"); //este sirve para comprobar el segundo "street" que hay
+  for (var j in options_predictions){
+    if(options_predictions[j].localeCompare("street") === 0){
+      continue
+    }else{
+      if(return_array.indexOf(options_predictions[j]) !== -1){
+      }else{
+        return_array.push(options_predictions[j])
+      }
+    }
   }
+  return_array = return_array.sort().reverse()
 
-  return options_older_values;  //se devuelve la lista con las posibles horas
+  return return_array
 }
 
 
