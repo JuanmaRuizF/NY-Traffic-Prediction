@@ -12,15 +12,18 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 
-
+"""
+Adaptación de la clase de WindowGenerator para hacer las predicciones en tiempo real y reentrenar el modelo
+En este caso sólo recibe un dataframe que contendrá los últimos valores necesarios para hacer la ventana de datos
+"""
 class WindowPredictions():
     def __init__(self, input_width, label_width, shift,
                 data_df, 
                 label_columns=None):
-        # Store the raw data.
+        # Almacenamiento de los conjuntos
         self.data_df = data_df.tail(input_width+label_width)
 
-        # Work out the label column indices.
+        # Índice de la columna de la etiqueta
         self.label_columns = label_columns
         if label_columns is not None:
             self.label_columns_indices = {name: i for i, name in
@@ -28,7 +31,7 @@ class WindowPredictions():
         self.column_indices = {name: i for i, name in
                             enumerate(data_df.columns)}
 
-        # Work out the window parameters.
+        # Parámetros de las ventanas
         self.input_width = input_width
         self.label_width = label_width
         self.shift = shift
@@ -57,8 +60,6 @@ class WindowPredictions():
                 [labels[:, :, self.column_indices[name]] for name in self.label_columns],
                 axis=-1)
 
-        # Slicing doesn't preserve static shape information, so set the shapes
-        # manually. This way the `tf.data.Datasets` are easier to inspect.
         inputs.set_shape([None, self.input_width, None])
         labels.set_shape([None, self.label_width, None])
 
@@ -72,7 +73,7 @@ class WindowPredictions():
                 sequence_length=self.total_window_size,
                 sequence_stride=1,
                 shuffle=True,
-                batch_size=1,)
+                batch_size=1,)  
         ds = ds.map(self.split_window)
 
         return ds

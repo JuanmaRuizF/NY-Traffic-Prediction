@@ -1,4 +1,3 @@
-
 import os
 import datetime
 from os import listdir
@@ -14,6 +13,8 @@ from datetime import datetime
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 
+#este método sirve para almacenar en un documento los datos que vengan en tiempo real junto con las predicciones generadas. Estos datos sirven para generar el JSON posteriormente
+#el método recibe tanto predicciones como datos generados en tiempo real
 def value_comparison(hour_datetime, prediction, predictions_df=None):
     
     file_directory = os.getcwd() + "/data/realtime_data/"
@@ -40,75 +41,33 @@ def value_comparison(hour_datetime, prediction, predictions_df=None):
     df_real_values["datetime"] = pd.to_datetime(df_real_values["datetime"])
 
 
-    df_append = pd.DataFrame(columns=columns)   #dataframe que añadirá los valores de la hora al archivo final
-
-    # df_append.at[0, 'datetime'] = hour_datetime #se le añade el valor de la hora solicitada como columna
-
     df_iteration = df_real_values   #esto servirá para iterar sobre todas las calles que hay
-    
-    # print("-" * 60)
-    # print(df_iteration)
-    # print(hour_datetime)
-    # return
-    if(prediction==False):
-        if not df.datetime.isin(df_iteration["datetime"]).any().any():
-            print("-"*80)
-            print("no esta la fecha en  prediction=false")
-            print("-"*80)
-            print(df_iteration.head())
 
-            if not df_iteration.empty:
-                df = df.append({'datetime':df_iteration.loc[df_iteration.index[-1], "datetime"]}, ignore_index=True)
-                print("-"*80)
-                print("not df_iteration.empty")
-                print("-"*80)
+    if(prediction==False):  #si se trata de valores reales
+        if not df.datetime.isin(df_iteration["datetime"]).any().any():  #si existe al menos algún elemento datetime de df_iteration que coincida con un elemento de datetime df -> true
             
-        for i in range(0,26):
-            # print("=*"*100)
-            # print(df_iteration.head())
-            # print("=*"*100)
-            #df_iteration = df_iteration.loc[df_iteration.loc[:, "link_name"] == i]  #acota el dataframe para tener únicamente los valores de esa calle
-            df_iteration = df_iteration.loc[df_iteration["link_name"] == i] 
-            # print(df_iteration.head())
-    
-            # print("="*100)
+            if not df_iteration.empty:  #si no existe esa fecha y además df_iteration no está vacío, se añade la fecha sin el contenido
+                df = df.append({'datetime':df_iteration.loc[df_iteration.index[-1], "datetime"]}, ignore_index=True)
+            
+        for i in range(0,26): #para cada valor de df_iteration se coge el relative_speed por calle y se añaden a la fecha de df correspondiente
+            df_iteration = df_iteration.loc[df_iteration["link_name"] == i] #acota el dataframe para tener únicamente los valores de esa calle
             if not df_iteration.empty:
                 df.loc[df.datetime==df_iteration.loc[df_iteration.index[-1], "datetime"],f'{i}-value'] = df_iteration.loc[df_iteration.index[-1],"relative_speed"]
 
-            #df_append.at[0, f"{i}-value"] = df_iteration["relative_speed"].values[0] #añade los valores a la columna correspondiente
-            df_iteration = df_real_values   #como el dataframe ha sido modificado para tener los datos de una de las calles, se le vuelve a asignar el dataframe con todas las calles para las siguientes iteraciones
-        
-        # # df = df.append(df_append)   #se añade la fila creada al dataframe
-    else:
-        string_prueba = "-pred"
 
-        # predictions_df["datetime"] = predictions_df["datetime"].astype(str)
+            df_iteration = df_real_values   #como el dataframe ha sido modificado para tener los datos de una de las calles, se le vuelve a asignar el dataframe con todas las calles para las siguientes iteraciones
+
+    else:   #si se trata de predicciones
 
         for ind in predictions_df.index:
 
             if not df.datetime.isin([predictions_df["datetime"][ind]]).any().any():
-                df = df.append({'datetime':predictions_df["datetime"][ind]}, ignore_index=True)
+                df = df.append({'datetime':predictions_df["datetime"][ind]}, ignore_index=True) #si no se encuentra la fecha y hora, la añade
             
-            for i in range(0,26):
+            for i in range(0,26):#para cada valor de predictions_df se añade la columna correspondiente a df
                 df.loc[df.datetime==predictions_df["datetime"][ind],f'{i}-pred'] = predictions_df[f'{i}-pred'][ind]
 
-            # if predictions_df["datetime"][ind] in df["datetime"].values:
-            #     condition = df.index[df['datetime'] == predictions_df["datetime"][ind]]
-            #     print("e verda")
-                # print(iterate_row[columns])
-                # df.loc[df.datetime == hour_datetime_, "columna"] = value
 
-                # df.at[condition]
-                #df_append.at[0, f"{i}-value"]
-                # print(df.index[df['datetime'] == predictions_df["datetime"][ind]])
-            # else:
-            #     df = df.append(predictions_df[ind])
-                # print(predictions["datetime"][ind])
-        # df = df.append(predictions_df)
-
-    df.to_csv(file_directory + "value_comparison.csv", index=False) #se guarda el archivo creado 
+    df.to_csv(file_directory + "value_comparison.csv", index=False) #se guarda el archivo creado o con los cambios
 
 
-# file_directory = os.getcwd() + "/data/realtime_data/a/"
-# df = pd.read_csv(file_directory + "value_comparison.csv", low_memory=False)
-# value_comparison("2021-07-20 16:00:00", True, df)

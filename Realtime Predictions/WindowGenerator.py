@@ -22,18 +22,22 @@ import numpy as np
 import os
 clear = lambda: os.system('Clear')
 
-
+"""
+Es una clase proporcionada por Tensorflow que ayuda en la creación de las ventanas de datos. Las ventanas de datos
+incluyen la lógica para los índices de entrada y etiqueta y reciben los conjuntos de entrenamiento de entrenamiento, validación y prueba
+que son convertidos al formato de tf.data.Dataset para poder ser aplicados a las series temporales.
+"""
 class WindowGenerator():
     def __init__(self, input_width, label_width, shift,
         train_df, val_df, test_df,
         label_columns=None):
 
-        # Store the raw data.
+        # Almacenamiento de los conjuntos
         self.train_df = train_df
         self.val_df = val_df
         self.test_df = test_df
 
-        # Work out the label column indices.
+        # Índice de la coluna de la etiqueta
         self.label_columns = label_columns
         if label_columns is not None:
             self.label_columns_indices = {name: i for i, name in
@@ -41,7 +45,7 @@ class WindowGenerator():
         self.column_indices = {name: i for i, name in
                             enumerate(train_df.columns)}
 
-        # Work out the window parameters.
+        # Parámetros de las ventanas
         self.input_width = input_width
         self.label_width = label_width
         self.shift = shift
@@ -71,14 +75,10 @@ class WindowGenerator():
                 [labels[:, :, self.column_indices[name]] for name in self.label_columns],
                 axis=-1)
 
-      # Slicing doesn't preserve static shape information, so set the shapes
-      # manually. This way the `tf.data.Datasets` are easier to inspect.
         inputs.set_shape([None, self.input_width, None])
         labels.set_shape([None, self.label_width, None])
 
         return inputs, labels
-
-    # WindowGenerator.split_window = split_window
 
     def make_dataset(self, data):
         data = np.array(data, dtype=np.float32)
@@ -94,7 +94,6 @@ class WindowGenerator():
 
         return ds
 
-    # WindowGenerator.make_dataset = make_dataset
 
 @property
 def train(self):
@@ -110,12 +109,9 @@ def test(self):
 
 @property
 def example(self):
-  # Get and cache an example batch of `inputs, labels` for plotting.
   result = getattr(self, '_example', None)
   if result is None:
-    # No example batch was found, so get one from the `.train` dataset
     result = next(iter(self.train))
-    # And cache it for next time
     self._example = result
   return result
 
