@@ -33,11 +33,17 @@ function Map(){
                 <h3 className="centerTitle"> Localización de las calles con mediciones</h3>
                 <div className="centradoMapa">
                     <iframe title="mapa" src="https://www.google.com/maps/d/u/0/embed?mid=1GXf-V5fhF0FqSJ4Ogfa4SFCOu5yG0_A0" width="640" height="380"></iframe>
-    
+                </div>
+
+                <div className="centradoMapa">
+                  <a href="https://github.com/JuanmaRuizF/NY-Traffic-Prediction">
+                    <img src="https://image.flaticon.com/icons/png/512/25/25231.png" alt="Github Link" width="40" height="40"></img>
+                  </a>
+                  <h6>Juan Manuel Ruiz Fránquiz</h6>
                 </div>
             </div>
     
-        );
+        );  
     } else {
         return(
 
@@ -46,6 +52,13 @@ function Map(){
                 <div className="centradoMapa">
                     <iframe title="mapa" src="https://www.google.com/maps/d/u/0/embed?mid=1GXf-V5fhF0FqSJ4Ogfa4SFCOu5yG0_A0" width="340" height="180"></iframe>
     
+                </div>
+
+                <div className="centradoMapa">
+                  <a href="https://github.com/JuanmaRuizF/NY-Traffic-Prediction">
+                    <img src="https://image.flaticon.com/icons/png/512/25/25231.png" alt="Github Link" width="40" height="40"></img>
+                  </a>
+                  <h6>Juan Manuel Ruiz Fránquiz</h6>
                 </div>
             </div>
     
