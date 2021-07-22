@@ -7,33 +7,91 @@ import TrafficStreet from './TrafficStreet'
 
 const predictions = data.Data
 const olderValues = data.RealValues
+/*
+Devuelve el número de horas coincidentes entre las predicciones y el tráfico. Esto es de utilidad a la hora de generar la gráfica para
+ignorar estas horas coincidentes a la hora de mostrar la gráfica. Para ello, recorre los JSON para la calle especificada y almacena las horas 
+Esto lo hace con la parte de predicciones y datos reales. Una vez hechos, se comparan ambos array para determinar el número de horas iguales.
+Devuelve este número.
+*/
+function getMatchingHours(props){ 
+  var return_number = 0
 
-//esta función tiene como objetivo recoger todas las horas que se encuentren en el JSON para la calle seleccionada. Serán utilizadas como eje X en la gráfica
-//además, se cambia el formato de la fecha y hora para ser más sencilla de ver
-function getLabels(props){
-  var labels = []
-
-  olderValues.map(s => {
+  var prediction_hours = []
+  predictions.map(s => {
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s)) {
-        if(key !== "street"){
-          labels.push(key.substring(5,16).replace("-","/"))
+        if(key !== props.streetname){
+          prediction_hours.push(key)
         }
       }
     }
     return null
   })
-  predictions.map(s => {
+  var older_value_hours = []
+  olderValues.map(s => {
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s)) {
+        if(key !== props.streetname){
+          if(key !== "street"){
+            older_value_hours.push(key)
+          }
+        }
+      }
+    }
+    return null
+  })
+  for(var index=0; index<older_value_hours.length; index++){
+    if(prediction_hours.indexOf(older_value_hours[index]) > -1){
+      return_number = return_number + 1
+    }
+  }
+
+
+  return return_number 
+}
+
+//esta función tiene como objetivo recoger todas las horas que se encuentren en el JSON para la calle seleccionada. Serán utilizadas como eje X en la gráfica
+//además, se cambia el formato de la fecha y hora para ser más sencilla de ver
+function getLabels(props, matchingHours){
+  var labels = []
+
+  olderValues.map(s => {
+    if(s["street"] === props.streetname){
+      for (const [key] of Object.entries(s).reverse()) {
         if(key !== "street"){
-          labels.push(key.substring(5,16).replace("-", "/"))
+          // labels.push(key.substring(5,16).replace("-","/"))
+          labels.push(key.substring(11,16).replace("-","/"))
+        }
+      }
+    }
+    return null
+  })
+
+  predictions.map(s => {
+    if(s["street"] === props.streetname){
+      for (const [key] of Object.entries(s).reverse()) {
+        if(key !== "street"){
+          if(matchingHours>0){
+            matchingHours = matchingHours -1
+          }else{
+          // labels.push(key.substring(5,16).replace("-", "/"))
+          labels.push(key.substring(11,16).replace("-", "/"))
+          }
+
         }
         
       }
     }
     return null
   })
+
+  // labels1.pop(0,matchingHours)
+  // labels1.splice(0,matchingHours)
+  // console.log(typeof(labels))
+  // labels.extend(labels1)
+  // labels = Object.values(labels)
+  // labels1 = Object.values(labels1)
+
   return labels
 }
 
@@ -43,7 +101,7 @@ function getPastValueData(props){
 
   olderValues.map(s => {
     if(s["street"] === props.streetname){
-      for (const [,value] of Object.entries(s)) {
+      for (const [,value] of Object.entries(s).reverse()) {
         if(value !== props.streetname){
           pastValueData.push(value)
         }
@@ -56,13 +114,27 @@ function getPastValueData(props){
 
 //este método hace lo mismo que getPastValueData() pero para los valores del JSON de las predicciones para la calle
 //el parámetro lastValue es utilizado para unir el último valor del pasado con el valor de las predicciones
-function getPredictionData(props, lastValue){
-  var predictionData = [null, null, null, null, null, lastValue]
+function getPredictionData(props, historicalArray, matchingHours){
+
+  // var predictionData = [null, null, null, null, null, lastValue]
+  var numberValues = historicalArray.length -1 
+  var predictionData = []
+  
+  for(var i=0; i<numberValues; i++){
+    predictionData.push(null)
+  }
+  // console.log(predictions)
+
+  predictionData.push(historicalArray[historicalArray.length-1])
   predictions.map(s => {
     if(s["street"] === props.streetname){
-      for (const [,value] of Object.entries(s)) {
+      for (const [,value] of Object.entries(s).reverse()) {
         if(value !== props.streetname){
-          predictionData.push(value)
+          if(matchingHours>0){
+            matchingHours = matchingHours -1
+          }else{
+            predictionData.push(value)
+          }
         }
       }
     }
@@ -76,10 +148,12 @@ function getPredictionData(props, lastValue){
 function ChartsPage(props){
   
   const [condition1, setcondition1]  = useState(true); //variable de control de renderizado para los componentes
-    var labels = getLabels(props) //listado con las horas que haya en el JSON para la calle seleccionada
 
+
+    var matchingHours = getMatchingHours(props)
+    var labels = getLabels(props, matchingHours) //listado con las horas que haya en el JSON para la calle seleccionada
     var pastValueData = getPastValueData(props) //datos pasados que haya en el JSON para la calle seleccionada
-    var predictionData = getPredictionData(props, pastValueData[pastValueData.length-1]) //predicciones del JSON para la calle seleccionada. 
+    var predictionData = getPredictionData(props, pastValueData, matchingHours) //predicciones del JSON para la calle seleccionada. 
                                                                                         // Además, se añade el último valor de los pasados para que las líneas en la gráfica aparezcan unidas
 
     const [state,] = useState({ //configuración de la gráfica
@@ -90,13 +164,13 @@ function ChartsPage(props){
                 label: "Valores Previos",
                 fill: true,
                 lineTension: 0.3,
-                backgroundColor: "rgba(225, 204,230, .3)",
-                borderColor: "rgb(199, 142, 44)",
+                backgroundColor: "rgb(93, 173, 226,0.2)",
+                borderColor: "rgb(93, 173, 226)",
                 borderCapStyle: "butt",
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: "miter",
-                pointBorderColor: "rgb(205, 130,1 58)",
+                pointBorderColor: "rgb(93, 173, 226)",
                 pointBackgroundColor: "rgb(255, 255, 255)",
                 pointBorderWidth: 10,
                 pointHoverRadius: 5,
@@ -111,13 +185,13 @@ function ChartsPage(props){
                 label: "Predicciones",
                 fill: true,
                 lineTension: 0.3,
-                backgroundColor: "rgba(225, 204,230, .3)",
-                borderColor: "rgb(35, 26, 136)",
+                backgroundColor: "rgb(246, 99, 25,0.2)",
+                borderColor: "rgb(246, 99, 25)",
                 borderCapStyle: "butt",
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: "miter",
-                pointBorderColor: "rgb(35, 26, 136)",
+                pointBorderColor: "rgb(246, 99,25)",
                 pointBackgroundColor: "rgb(255, 255, 255)",
                 pointBorderWidth: 10,
                 pointHoverRadius: 5,
@@ -144,7 +218,7 @@ function ChartsPage(props){
               <Line data={state.dataLine} options={{ responsive: true }}/>
           </MDBContainer>
 
-          <p>El eje X muestra el tiempo. Los 6 primeros valores son los valores reales registrados en esa calle para esa hora. Los otros 4 valores representan las predicciones realizadas por el modelo para las siguientes 4 horas. El modelo utiliza las últimas 12 horas de datos para realizar estas predicciones.</p>
+          <p>El eje X muestra el tiempo. Los primeros valores (línea azul) son los valores reales registrados en esa calle para esa hora. Los otros 4 valores (línea naranja) representan las predicciones realizadas por el modelo para las siguientes 4 horas.</p>
           <p>El eje Y representa la velocidad relativa. Por ejemplo, una velocidad relativa de 0.5 en una calle de un máximo de 100 km/h significa que los coches han viajado por esa calle a una media de 50 km/h. Se considera que el estado del tráfico es malo cuando
             la velocidad relativa es inferior a 0,5</p>      
                 <div className="centrado">

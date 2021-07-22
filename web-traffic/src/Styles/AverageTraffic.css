@@ -23,3 +23,11 @@
     text-align: center;
     background-color: rgb(23, 172, 55);
 }
+
+.noInformation {
+    width: 20%;
+    display: table;
+    margin: 0 auto;
+    text-align: center;
+    background-color: rgb(107, 112, 108);
+}
