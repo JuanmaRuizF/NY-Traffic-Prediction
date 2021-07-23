@@ -167,6 +167,11 @@ def predictions(hour_datetime):
 
         #Estos elementos generados de las predicciones están normalizados, por tanto se desnormalizan en el método
         denormalized_predictions = denormalize_data(list_predictions, i)
+        
+        prediction_iterator = 0
+        for prediction in denormalized_predictions:
+            df_append.at[prediction_iterator, f"{i}-pred"] = prediction
+            prediction_iterator = prediction_iterator+1
 
 
     #una vez se han generado todas las nuevas predicciones, se hace una llamada al método value_comparison para almacenar las nuevas predicciones para la última hora en el archivo que será utilizado
