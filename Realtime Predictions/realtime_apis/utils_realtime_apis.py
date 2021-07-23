@@ -2,6 +2,7 @@ import pytz, os,     csv
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 
+#métodos que son utilizados por los distintos archivos de solicitudes a las API en tiempo real
 class UtilsRealtimeApis():
 
     def get_format_datetime(self):
@@ -31,14 +32,14 @@ class UtilsRealtimeApis():
         datetime_value = dt.strptime(datetime_value, format_datetime)
         return current_datetime - datetime_value
 
-    def get_lists(self):
+    def get_lists(self):    #lista con los datos que se desea de cada una de las API
         list_traffic = ["datetime","datetime_traffic","weekday","speed","travel_time","link_name"]
         list_airQuality = ["datetime","AQI_PM2.5","Parameter_PM2.5","Unit_PM2.5","Value_PM2.5","Category_PM2.5","AQI_OZONE","Parameter_OZONE","Unit_OZONE","Value_OZONE","Category_OZONE"]
         list_weather = ["datetime","Minimum Temperature","Maximum Temperature","Temperature","Dew Point","Relative Humidity","Heat Index","Wind Speed","Wind Gust","Wind Direction","Wind Chill","Precipitation","Precipitation Cover","Snow Depth","Visibility","Cloud Cover","Sea Level Pressure","Conditions"]
         list_merge = list_traffic + list_airQuality[1:] + list_weather[1:]
         return list_traffic, list_airQuality, list_weather, list_merge
 
-    def get_realtime_apis_file_directions(self):
+    def get_realtime_apis_file_directions(self):    #ubicación de los archivos donde se almacenan los datos obtenidos en tiempo real
 
         current_dir = os.getcwd() + "/data/realtime_data"
 

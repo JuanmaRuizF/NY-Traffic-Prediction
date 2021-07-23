@@ -5,7 +5,7 @@ from datetime import timedelta as timedelta
 from realtime_apis.utils_realtime_apis import UtilsRealtimeApis 
 
 class ApiAirQuality:
-    ##Método que se conecta con la api y guarda datos en un rango de fecha excluye la primera linea --------
+    ##Método que se conecta con la api y solicita los datos a partir de un rango de fecha concreto
     def air_quality_data_ingestion(self, start_datetime, file_dir):
         utils = UtilsRealtimeApis()
         format_datetime = utils.get_format_datetime()
@@ -13,11 +13,11 @@ class ApiAirQuality:
         #pasando hora de NY a UTC para hacer la solicitud a la hora deseada
         hour_datetime = utils.convert_time_str(start_datetime, str_ny, 'UTC')[0:13]
         
-        # handle certificate verification and SSL warnings
+        # manejar la verificación de certificados y las advertencias SSL
         # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',ca_certs=certifi.where())
 
-        # get data from the API
+        # obtener información para la hora actual del realtime
         url = f"https://www.airnowapi.org/aq/data/?startDate={hour_datetime}&endDate={hour_datetime}&parameters=OZONE,PM25&BBOX=-74.020308,40.700155,-73.940657,40.827572&dataType=B&format=application/json&verbose=0&nowcastonly=0&includerawconcentrations=0&API_KEY=7FD50518-C721-4C9A-861F-883367594091"
         response = http.request('GET', url)
         
@@ -51,6 +51,7 @@ class ApiAirQuality:
             if res.days <= 0 and res.seconds <= 7200:      
                     return False
     
+        #Se procesan las columnas que se desean en el formato que se desean
         results_df = results_df.rename(columns={"UTC": "datetime"}) 
         results_df["datetime"] = pd.to_datetime(results_df["datetime"])
         
@@ -66,7 +67,7 @@ class ApiAirQuality:
         #aseguramos guardar valor en orden de fecha
         air_quality_df = air_quality_df.sort_values("datetime")
 
-        #data saving as csv
+        #se guarda el valor en el CSV. Este csv sólo tendrá ese valor
         air_quality_df.to_csv(file_dir, index=False)
 
         print(f"AirQualityApi: {file_dir}")

@@ -16,13 +16,12 @@ from value_comparison import value_comparison
 
 class MainRealtimeApis:
 
-    """ DEFINICIÓN DE VARIABLES
+    """ DEFINICIÓN DE VARIABLES EN EL CONSTRUCTOR:
     Se registra la hora de ejecución
     Se guardan en variables las rutas de los archivos
     Se guardan en listas las cabeceras para cada archivo
     """
-    
-    # file = os.getcwd() + "\\apis\out_apis\merge.csv"
+ 
     file = os.getcwd() + "/data/realtime_data/apis_data/merge.csv"
     def __init__(self):
 
@@ -47,13 +46,12 @@ class MainRealtimeApis:
 
         api_traffic = ApiTraffic()
         self.traffic_iter_time = iter_time
-        """ Si existe el archivo de tráfico primera consulta es a partir de la hora actual
+        """ 
             -- mientras método de API retorne falso se espera
             -- cuando método de API retorna verdadero se escribe el valor en merge y se empieza a iterar
         """  
-        # time.sleep(10)
         while not api_traffic.traffic_data_ingestion(limit, self.input_datetime, self.traffic_file):
-            print("traffic: file not found - waiting to new values")
+            print("traffic: file not found - waiting for new values")
             time.sleep(iter_time)
 
         write_thread = threading.Thread(target=self.write, args = (self.traffic_file,) )
@@ -65,31 +63,27 @@ class MainRealtimeApis:
         """
 
         while True:
-            traffic= pd.read_csv(self.merge_file)     #SE LEE EL ULTIMO REGISTRO DE FECHA REGISTRADO EN MERGE PARA TRAFICO ---borrar: de esta forma se evita que por cuestiones de computo se consulte más rápido de lo que se escribe y se haga un salto en el registro de merge
+            traffic= pd.read_csv(self.merge_file)     #se lee el último valor (última hora) registrada en el archivo de tráfico
             datetime = traffic.loc[traffic.index[-1], "datetime_traffic"]
             print(f"traffic: call {datetime}")
             
             while not api_traffic.traffic_data_ingestion(limit, datetime, self.traffic_file):
-                print("traffic: WAITING TO NEW VALUES")
+                print("traffic: WAITING FOR NEW VALUES")
                 time.sleep(iter_time)
             
             write_thread = threading.Thread(target=self.write, args = (self.traffic_file,) )
             write_thread.start()
             time.sleep(10)
 
-    """ AirApi y Weather:
+    """ Calidad de aire y Clima:
         Se consultan datos que se traen por hora
         --Al registrarlos en merge:
             * La fecha consultada debe ser menor que la fecha del último registro para tráfico en merge
             * Si se detecta un salto temporal en los datos de tráfico se introduce la línea en orden sin datos de tráfico
             * APIS - Si no hay valores para una Fecha y han pasado más de 2 horas se guarda el valor anterior
 
-        --Se toma la hora de ejecución y a medida que se rellenen los datos se le va sumando 1 hora
+        --Se toma la hora de ejecución y a medida que se rellenen los datos se le va sumando 1 hora para buscar y traer los datos de la hora siguiente
 
-        --Recomendaciones: hacer iteraciones cada 30 minutos al menos. 
-                        Las apis tardan entre 1 hora y 2 horas en devolver los datos deseados. 
-                        Por lo que de esta forma si se consulta al pasar 1h de ejecución y la api 
-                        genera el valor para cuando ha pasado 1h25min no se tiene que esperar 2h enteras.
     """
     def weather_api(self, iter_time):
         print("weather: executed")
@@ -101,7 +95,7 @@ class MainRealtimeApis:
             print(f"weather: call {start_datetime}")
             time.sleep(15)
             while not api_weather.weather_data_ingestion(start_datetime, self.weather_file):
-                print(f"weather: WAITING TO NEW VALUES FOR WEATHER")
+                print(f"weather: WAITING FOR NEW VALUES FOR WEATHER")
                 time.sleep(iter_time)
             
             write_thread = threading.Thread(target=self.write, args = (self.weather_file, self.merge_file, self.list_weather) )
@@ -124,11 +118,9 @@ class MainRealtimeApis:
         api_air_quality = ApiAirQuality()
 
         start_datetime = self.input_datetime
-       
 
         while True:
             print(f"air: call {start_datetime}")
-            # time.sleep(iter_time)
             time.sleep(20)
             while not api_air_quality.air_quality_data_ingestion(start_datetime, self.air_quality_file):
                 print(f"air: WAITING TO NEW VALUES FOR air_quality")
@@ -154,7 +146,7 @@ class MainRealtimeApis:
         - Si el @file_name es el correspondiente a tráfico
             *se registran los nuevos valores
         - Si @merge_file_used esta en blanco
-            *se devuelve false y se sale del metodo
+            *se devuelve false y se sale del método
         - else
             *Se llama al metodo fileConcatMerge
                 se devuelve el resultado de la llamada
@@ -167,13 +159,7 @@ class MainRealtimeApis:
         df0["datetime"] = pd.to_datetime(df0["datetime"],format="%Y-%m-%d %H:%M:%S")
 
         df1 = pd.read_csv(file_name)
-        # print(df1["datetime"].head())
-        print(df1["datetime"].iat[0])
-        #df1["datetime"] = df1.datetime.dt.strftime('%Y-%m-%d %H:%M:%S')
         df1["datetime"] = pd.to_datetime(df1["datetime"],format="%Y-%m-%d %H:%M:%S") 
-        # print(df1["datetime"].head())
-        print_var = df1["datetime"].iat[0]
-        print(print_var)
 
         """ 1T_W: SE REGISTRAN VALORES DE TRÁFICO
             2T_W: NO HAY VALORES DE TRÁFICO EN MERGE
@@ -183,12 +169,12 @@ class MainRealtimeApis:
             df0 = pd.concat([df0, df1])
             df0.to_csv(merge_file_used, index= False, date_format='%Y-%m-%d %H:%M:%S')
             return
-        elif df0.shape[0] <= 0:  #es decir aun no se guardan datos de trafico
+        elif df0.shape[0] <= 0: 
             return
-            #return False
         """ CONDICIÓN ^^Línea de arriba - if TRUE: FIN else FALSE: CONTINUE
-            -- Si el documento no tiene ni un solo registro guardado no se ejecuta el resto del código
+            -- Si el documento no tiene ni un solo registro guardado no se ejecuta el resto del código ya que no estarán los datos del tráfico
         """
+        #si llega aquí es que hay datos de tráfico, por lo que se pueden unir los de calidad de aire y clima
         result = my_class.file_concat_merge(df0, df1, list)
 
         if file_name == self.air_quality_file:
@@ -201,7 +187,6 @@ class MainRealtimeApis:
 
         df0 = result[1]
         df0.to_csv(merge_file_used, index= False, date_format='%Y-%m-%d %H:%M:%S')
-        print(result[2])
 
         ### Si se han registrado los valores para aire y clima en el rango de tiempo
         hour_datetime = df1.loc[0, 'datetime']
@@ -210,23 +195,22 @@ class MainRealtimeApis:
         if not write_air.isnull().all().all() and not write_weather.isnull().all().all():
             print(f"write - register: {hour_datetime}")
             df = df0.loc[df0.datetime == hour_datetime]
-            # done se guarda todos los valores de la hora en concreto donde estamos
+            # donde se guarda todos los valores de la hora en concreto donde estamos
             file_path = os.getcwd() + "/data/realtime_data/merge_hora.csv"
             df.to_csv(file_path, index=False, date_format='%Y-%m-%d %H:%M:%S')
-            # PreprocessData(file_path, hour_datetime)
             PreprocessData(file_path, False)
             value_comparison(hour_datetime, False)
             if (hour_datetime + timedelta(hours=4)) >= dt.strptime(self.ini_datetime, "%Y-%m-%dT%H:%M:%S"):
                 predictions(hour_datetime)
-                # value_comparison(hour_datetime, True)
+
         
 
     """ fileConcatMerge:   
         *** recibe dos dataframes @df0 y @df1 y una lista con nombres de columnas @columns
         -Incluye en @df0 los valores de @df1 de @columns cuando la columna "datetime" coincide
         -Sólo registra los valores de @df1 en @df0 
-            *Si, se han recogido todos los valores de tráfico para el valor "datetime" en @df0
-                es decir, se registra cuando el último valor de @df0["datetime"] es mayor que @df1["datetime"]
+            *Si se han recogido todos los valores de tráfico para el valor "datetime" en @df0.
+                Es decir, se registra cuando el último valor de @df0["datetime"] es mayor que @df1["datetime"]
         -En caso de no encontrar coincidencias:
             *Si se cumple la condicion anterior, indica que no hay valores de tráfico para el "datetime" consultado
                 entonces, se salta a la siguiente hora 
@@ -261,19 +245,18 @@ class MainRealtimeApis:
         
         return[True, df0, sms]
 
-    def realtime_apis(self):
+    def realtime_apis(self):    #inicializa los hilos que tienen la ejecución de la obtención de datos en tiempo real de las distintas API
 
 
-        self.input_datetime = dt.strptime(str(self.ini_datetime), self.format_datetime) - timedelta(hours=12+4)
+        self.input_datetime = dt.strptime(str(self.ini_datetime), self.format_datetime) - timedelta(hours=12+4) #Este timedelta son 12 horas que necesita el modelo para hacer predicciones + 4 horas de predicciones que genera
 
         self.input_datetime = str(self.input_datetime).replace(" ","T")
-        #crear variable con hora actual - t desfase - input length
         self.utils.file_creator(self.merge_file, self.list_merge) 
 
-
+        #columnas que serán guardadas tras la obtención y preprocesamiento de los datos en tiempo real
         column_list = ["datetime","link_name","weekday","speed","travel_time","AQI_PM2.5","Value_PM2.5","AQI_OZONE","Value_OZONE","Temperature","Relative Humidity","Precipitation","Snow Depth","Visibility","Conditions","relative_speed"]
         
-        file_save = os.getcwd() + "/data/realtime_data/merge1.csv"
+        file_save = os.getcwd() + "/data/realtime_data/merge1.csv"  #fichero donde se almacenan los datos en tiempo real preprocesados
 
         self.utils.file_creator(file_save, column_list) 
 
@@ -284,6 +267,3 @@ class MainRealtimeApis:
         traffic_api_.start()
         air_api_.start() 
         weather_api_.start()  
-
-# MainRealtimeApis().realtime_apis()
-
