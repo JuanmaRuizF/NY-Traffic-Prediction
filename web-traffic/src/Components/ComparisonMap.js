@@ -4,6 +4,7 @@ import { MDBContainer } from "mdbreact";
 import data from '../Data/TrafficJSON.json'
 import Button from 'react-bootstrap/Button'
 import ComparisonMenu from './ComparisonMenu'
+import { render } from "@testing-library/react";
 
 const predictions = data.Data
 const olderValues = data.RealValues
@@ -108,14 +109,12 @@ function getPastValueData(props){
 //el parámetro lastValue es utilizado para unir el último valor del pasado con el valor de las predicciones
 function getPredictionData(props, historicalArray, matchingHours){
 
-  // var predictionData = [null, null, null, null, null, lastValue]
   var numberValues = historicalArray.length - matchingHours 
   var predictionData = []
   
   for(var i=0; i<numberValues; i++){
     predictionData.push(null)
   }
-  // console.log(predictions)
 
 
   predictions.map(s => {
@@ -214,21 +213,9 @@ function ComparisonMap(props){
             ]
         },
         barChartOptions: {
+          legend: false,
           responsive: true,
           maintainAspectRatio: true,
-          scales: {
-            xAxes: [{
-              gridLines: {
-                  offsetGridLines: true,
-              }
-          }],
-          yAxes: [{
-              ticks: {
-                min:0
-                // beginAtZero: true
-              }
-          }]
-          }
         }
     });
 
@@ -253,40 +240,22 @@ function ComparisonMap(props){
       barChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          xAxes: [
-            {
-              barPercentage: 1,
-              gridLines: {
-                display: true,
-                color: "rgba(0, 0, 0, 0.1)"
-              }
-            }
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true,
-                color: "rgba(0, 0, 0, 0.1)"
-              },
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
       }
     })
+
+
       if(condition1){ //renderizado de la gráfica con los valores de la calle seleccionada
+
         return(
           <>
+
           <div className="mainContainer">
           <h3 className="centerTitle">Comparativa de los valores reales y predicciones por calle</h3>
           
           <h4 className="centerTitle">{props.streetname}</h4>
           <MDBContainer>  
-              {/* <Line data={state.dataLine} options={{ responsive: true}}/> */}
-              <Line data={state.dataLine} options={state.barChartOptions} />
+              <Line data={state.dataLine} options={{ responsive: true}}/>
+
           </MDBContainer>
           <h4 className="centerTitle">Error de las predicciones</h4>
           <MDBContainer> 
@@ -299,7 +268,6 @@ function ComparisonMap(props){
                 <div className="centrado">
                 <Button variant="primary" size="md" onClick={() => 
                     setcondition1(false)
-
                     }>Selecciona otra calle</Button>{' '}
                 </div>
             </div>

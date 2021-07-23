@@ -74,7 +74,6 @@ function getLabels(props, matchingHours){
           if(matchingHours>0){
             matchingHours = matchingHours -1
           }else{
-          // labels.push(key.substring(5,16).replace("-", "/"))
           labels.push(key.substring(11,16).replace("-", "/"))
           }
 
@@ -108,14 +107,12 @@ function getPastValueData(props){
 //el parámetro lastValue es utilizado para unir el último valor del pasado con el valor de las predicciones
 function getPredictionData(props, historicalArray, matchingHours){
 
-  // var predictionData = [null, null, null, null, null, lastValue]
   var numberValues = historicalArray.length -1 
   var predictionData = []
   
   for(var i=0; i<numberValues; i++){
     predictionData.push(null)
   }
-  // console.log(predictions)
 
   predictionData.push(historicalArray[historicalArray.length-1])
   predictions.map(s => {

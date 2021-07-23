@@ -1,7 +1,6 @@
 
-import React from 'react';
+import React, {useState} from 'react';
 import data from '../Data/TrafficJSON.json'
-import {useState} from 'react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../Styles/TrafficStreet.css'

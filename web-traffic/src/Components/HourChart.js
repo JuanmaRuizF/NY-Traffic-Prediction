@@ -54,9 +54,8 @@ function graphData(props){
 
 
      //se retorna un array cuyos valores serán los obtenidos en el método
-    var return_array = [labels_street, data_street, color_street];
 
-    return return_array;
+    return [labels_street, data_street, color_street];
 
 
 }
