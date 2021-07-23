@@ -36,7 +36,6 @@ def value_comparison(hour_datetime, prediction, predictions_df=None):
  
     hour_datetime = hour_datetime.strftime('%Y-%m-%d %H:%M:%S') #se convierten ambas columnas a string para poder hacer la comparación bien en el .loc para acotar el DF para la hora solicitada
     df_real_values["datetime"] = df_real_values["datetime"].astype(str)
-    print(df_real_values['datetime'])
     df_real_values = df_real_values.loc[df_real_values['datetime'] == hour_datetime]
     df_real_values["datetime"] = pd.to_datetime(df_real_values["datetime"])
 
