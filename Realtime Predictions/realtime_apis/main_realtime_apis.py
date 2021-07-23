@@ -6,8 +6,6 @@ from realtime_apis.api_weather import ApiWeather
 from realtime_apis.utils_realtime_apis import UtilsRealtimeApis
 import pandas as pd
 import threading, time, os, pytz
-# import sys
-# # sys.path.append(".")
 from preprocessData import PreprocessData
 from predictions import predictions
 from value_comparison import value_comparison

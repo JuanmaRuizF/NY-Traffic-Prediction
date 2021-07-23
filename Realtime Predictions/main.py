@@ -6,8 +6,7 @@ from datetime import date
 import os
 from os import listdir
 from pathlib import Path
-import matplotlib.pyplot as plt
-import math
+
 
 
 from realtime_apis.main_realtime_apis import MainRealtimeApis

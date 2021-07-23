@@ -1,15 +1,7 @@
 import os
-import datetime
 from os import listdir
-import IPython
-import IPython.display
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
 from numpy.lib.function_base import delete
 import pandas as pd
-import tensorflow as tf
-from datetime import datetime
 from datetime import datetime as dt
 from datetime import timedelta as timedelta
 

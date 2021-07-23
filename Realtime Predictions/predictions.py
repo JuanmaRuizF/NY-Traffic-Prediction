@@ -1,23 +1,12 @@
 import os
-import datetime
-
-import IPython
-import IPython.display
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 from numpy.lib.function_base import append
 import pandas as pd
 from tensorflow import keras
-from tensorflow.keras import layers
-import json
+
 from datetime import timedelta as timedelta
 from datetime import datetime as dt
 from value_comparison import value_comparison
-mpl.rcParams['figure.figsize'] = (8, 6)
-mpl.rcParams['axes.grid'] = False
-from keras.datasets import imdb
-from keras import models, layers, optimizers
 from create_JSON import create_JSON
 import numpy as np
 from windowPredictions import WindowPredictions

@@ -1,17 +1,10 @@
 import os
-import datetime
 from os import listdir
-import IPython
-import IPython.display
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 from numpy.lib.function_base import delete
 import pandas as pd
-import tensorflow as tf
 
-mpl.rcParams['figure.figsize'] = (8, 6)
-mpl.rcParams['axes.grid'] = False
+
 
 
 #Método que devuelve el dataframe sin las columnas no deseadas

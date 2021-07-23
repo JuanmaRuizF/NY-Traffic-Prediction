@@ -1,22 +1,7 @@
 import os
-import datetime
-
-import IPython
-import IPython.display
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-
-mpl.rcParams['figure.figsize'] = (8, 6)
-mpl.rcParams['axes.grid'] = False
-
-
-from keras.datasets import imdb
-from keras import models, layers, optimizers
 import numpy as np
 
 import os
