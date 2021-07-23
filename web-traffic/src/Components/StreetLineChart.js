@@ -84,14 +84,6 @@ function getLabels(props, matchingHours){
     }
     return null
   })
-
-  // labels1.pop(0,matchingHours)
-  // labels1.splice(0,matchingHours)
-  // console.log(typeof(labels))
-  // labels.extend(labels1)
-  // labels = Object.values(labels)
-  // labels1 = Object.values(labels1)
-
   return labels
 }
 

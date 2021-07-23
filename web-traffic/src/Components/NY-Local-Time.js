@@ -2,9 +2,15 @@ import React from 'react';
 import '../Styles/AverageTraffic.css'
 import data from "../Data/TrafficJSON.json";
 
-//Este componente es informativo. 
-//Su objetivo es proporcionar la hora local en nueva York para así poder ver los valores de las gráficas para valores futuros
-//El componente consiste en crear una variable de tipo Date que tenga la zona horaria de Nueva York en formato acortado (ej: 8:45 PM)
+/*
+Este componente es informativo. 
+Su objetivo es proporcionar la hora local en nueva York para así poder ver los valores de las gráficas para valores futuros
+El componente consiste en crear una variable de tipo Date que tenga la zona horaria de Nueva York en formato acortado (ej: 8:45 PM)
+Además, se almacena la hora actual en Nueva York y se busca en los datos proporcionados por el JSON. Si no se encuentra la hora en el JSON, se mostrará
+un mensaje diciendo "sin información". En el caso en el que sí que exista la hora en el JSON, analiza todos los valores para esa hora para determinar si el tráfico
+está bien o mal, que será lo que muestre.
+*/
+
 const predictions = data.Data;
 const olderValues = data.RealValues;
 
@@ -23,7 +29,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-//realiza la conversión de la fecha actual al formato necesario para las mediciones
+//realiza la conversión de la fecha actual al formato necesario para las mediciones. Ejemplo del formato: 2021-07-01 22:00:00 (así es el formato de las horas del JSON)
 function convertTime(){
     var date_now_NY = new Date().toLocaleString("en-US", {
         timeZone: "America/New_York" ,
@@ -47,8 +53,12 @@ function datos_fecha(fecha_hora_procesada){
     return false
 }
 
-//si la hora se encuentra entre los valores del JSON, los busca y analiza para comprobar si hay más valores que sean >0.5 (estado del tráfico bueno)
-//o si hay más valores con un valor menor a 0.5 (estado del tráfico malo). Esto hará que se renderice el componente mostrando si el tráfico está bien o mal
+/*
+si la hora se encuentra entre los valores del JSON, los busca y analiza para comprobar si hay más valores que sean >0.5 (estado del tráfico bueno)
+o si hay más valores con un valor menor a 0.5 (estado del tráfico malo). Esto hará que se renderice el componente mostrando si el tráfico está bien o mal
+Se busca en primer lugar en los valores reales, y si no se encuentra en esos valores, se busca en los valores de las predicciones
+*/
+
 function traffic_status(time){
     var bad_traffic = 0;
     var good_traffic = 0;
@@ -82,6 +92,7 @@ function traffic_status(time){
 }
 
 
+// El componente obtiene la hora local en Nueva York y, dependiendo de si esa hora se encuentra dentro de los datos del JSON, renderiza una opción u otra.
 function averageTraffic(){
 
     var date_now_NY = new Date().toLocaleString("en-US", {  //fecha de Nueva York en el formato adecuado
@@ -92,9 +103,6 @@ function averageTraffic(){
 
     var fecha_hora_procesada = convertTime()    
     var isFound = datos_fecha(fecha_hora_procesada) //se usa la fecha convertida al formato requerido para buscar si esa hora se encuentra dentro de los valores del JSON
-
-    // var isFound = datos_fecha("2021-07-20 22:00:00")
-
 
     if(isFound === false){  //si no se encuentra es que no hay datos para esa hora, por lo que muestra el apartado "Sin información"
         return(
@@ -107,9 +115,9 @@ function averageTraffic(){
         );
     
     }else{
-        var goodTraffic = traffic_status(fecha_hora_procesada)  //se busca la hora en cuestión en el JSON para comprobar si hay mlás valores de tráfico bien o mal
+        var goodTraffic = traffic_status(fecha_hora_procesada)  //se busca la hora en cuestión en el JSON para comprobar si hay más valores de tráfico bien o mal
 
-        if(goodTraffic === true){
+        if(goodTraffic === true){   //si hay más valores con el tráfico en buen estado, renderiza el estado actual del tráfico como "bien"
             return(
                 <div className="mt-5">
                     <h2 className="NY-LocalTime">Hora en Nueva York:</h2>
@@ -118,8 +126,8 @@ function averageTraffic(){
                     <h3 className="goodStatus">Bueno</h3>
                 </div>
             );
-        }else{
-            return(
+        }else{  //si hay más valores que muestran un mal estado del tráfico, renderiza el componente con el estado actual del tráfico como "malo"
+            return( 
                 <div className="mt-5">
                     <h2 className="NY-LocalTime">Hora en Nueva York:</h2>
                     <h2 className="dateNow">{date_now_NY}</h2>

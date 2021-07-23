@@ -11,6 +11,7 @@ const predictions = data.Data;
 const olderValues = data.RealValues;
 
 //Como este componente tiene como objetivo mostrar todas las horas disponibles en el JSON, se accede a las fechas y horas que se encuentran en el JSON y se retornan.
+//Como en los 2 apartados del JSON hay horas que pueden ser idénticas, el método comprueba esto para evitar añadirlas duplicadas.
 function getOptions() {
   var options_predictions = Object.values(Object.keys(predictions[0]));
 
@@ -41,7 +42,7 @@ function getOptions() {
   return return_array
 }
 
-
+//muestra el menú con todas las horas disponibles para seleccionar la que se desee y el botón con el que generar el gráfico.
 function TrafficHour() {
 
   var options = getOptions(); //se hace la llamada para tener todas las posibles horas
@@ -59,7 +60,7 @@ function TrafficHour() {
               <Form.Control
                 as="select"
                 onChange={(event) => {
-                  setSelectedHour(event.target.value);  //el valor de la hora seleccionada cambia al escoger otro
+                  setSelectedHour(event.target.value);  //el valor de la hora seleccionada cambia al escoger otra opción
                 }}
                 custom>
                 {options.map((s) => ( // se recorre la lista de las posibles opciones y se añaden al menú deplegable. Además, se eliminan los valores para los segundos en el substring  

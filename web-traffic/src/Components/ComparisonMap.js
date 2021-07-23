@@ -212,9 +212,27 @@ function ComparisonMap(props){
               },
 
             ]
+        },
+        barChartOptions: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            xAxes: [{
+              gridLines: {
+                  offsetGridLines: true,
+              }
+          }],
+          yAxes: [{
+              ticks: {
+                min:0
+                // beginAtZero: true
+              }
+          }]
+          }
         }
     });
-    
+
+
     const[state1,] = useState({
       dataBar: {
         labels: labels,
@@ -267,7 +285,8 @@ function ComparisonMap(props){
           
           <h4 className="centerTitle">{props.streetname}</h4>
           <MDBContainer>  
-              <Line data={state.dataLine} options={{ responsive: true }}/>
+              {/* <Line data={state.dataLine} options={{ responsive: true}}/> */}
+              <Line data={state.dataLine} options={state.barChartOptions} />
           </MDBContainer>
           <h4 className="centerTitle">Error de las predicciones</h4>
           <MDBContainer> 
