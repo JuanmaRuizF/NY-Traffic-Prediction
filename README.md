@@ -32,6 +32,8 @@ Si el módulo devuelve un error se debe a que se ha llegado al límite de solici
 
 Las claves se obtienen del siguiente enlace: https://rapidapi.com/visual-crossing-corporation-visual-crossing-corporation-default/api/visual-crossing-weather/ . Se debe registrar en la página y en la parte de "Pricing" seleccionar la opción "Basic". Una vez suscrito en la API, en el menú de "endpoints" de la página web aparece la clave generada.
 
+Es importante tener en cuenta que durante la primera ejecución del main.py se puede demorar sobre 30 minutos, ya que necesita descargar todos los datos históricos, preprocesarlos y crear los modelos para cada una de las calles. Para visualizar las primeras predicciones y valores obtenidos en tiempo real también hay que esperar un poco, ya que necesita hacer varias peticiones de horas pasadas para generar las predicciones.
+
 ### web-traffic
 
 Este módulo es la página web. Está hecha en React, por lo que se deberá tener React instalado (esto incluye instalar node.js y npm). Una vez se cuente con lo necesario para ejecutar un proyecto en React, seguir los siguientes pasos:
