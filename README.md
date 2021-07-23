@@ -8,7 +8,6 @@ Este es el módulo para la obtención de datos, análisis y procesamiento de los
 
 Además, se hace uso de las siguientes librerías de Python. La instalación se puede hacer con "pip", por lo que deberá ser instalado también:
 - pip install pandas 
-- pip install matplotlib
 - pip install sodapy
 - pip install IPython
 - pip install tensorflow
