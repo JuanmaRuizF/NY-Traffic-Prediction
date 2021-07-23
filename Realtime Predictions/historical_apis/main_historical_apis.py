@@ -108,7 +108,7 @@ def mergeFilesWithLocation(location, output_name):
             df = pd.concat([df,df_concat]) #el archivo es unido al dataframe con todos los archivos
             print("write: " + file) #mensaje de validación para la unión
 
-    print("Número total de filas: " + df.shape[0]) 
+    print(f'Número total de filas: {df.shape[0]}') 
     #el archivo de unión es guardado en el directorio dado por parámetro.
     output_csv =  location + output_name
     df.to_csv(output_csv, index=False)
