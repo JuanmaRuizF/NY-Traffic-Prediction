@@ -10,10 +10,8 @@ code {
 }
 
 body {
-    /* background-image: url(https://images.unsplash.com/photo-1490644658840-3f2e3f8c5625?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2134&q=80); */
     background-image: url(https://i.imgur.com/1aSP24O.jpg);
     background-size: cover;
-    /* background-color: blue; */
 }
 
 .container {
