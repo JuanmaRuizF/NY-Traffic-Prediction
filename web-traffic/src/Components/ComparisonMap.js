@@ -4,7 +4,7 @@ import { MDBContainer } from "mdbreact";
 import data from '../Data/TrafficJSON.json'
 import Button from 'react-bootstrap/Button'
 import ComparisonMenu from './ComparisonMenu'
-import { render } from "@testing-library/react";
+
 
 const predictions = data.Data
 const olderValues = data.RealValues

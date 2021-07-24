@@ -59,7 +59,6 @@ function getLabels(props, matchingHours){
     if(s["street"] === props.streetname){
       for (const [key] of Object.entries(s).reverse()) {
         if(key !== "street"){
-          // labels.push(key.substring(5,16).replace("-","/"))
           labels.push(key.substring(11,16).replace("-","/"))
         }
       }
