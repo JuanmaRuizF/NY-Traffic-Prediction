@@ -12,7 +12,7 @@ def create_JSON():
 
     file_directory = os.getcwd() + "/data/realtime_data/"   
 
-    df = pd.read_csv(file_directory + "value_comparison.csv", low_memory=False) # se abre el archivodonde están los valores reales y predicciones
+    df = pd.read_csv(file_directory + "value_comparison.csv", low_memory=False) # se abre el archivo donde están los valores reales y predicciones
 
     linkName_dictionary = { #Este diccionario servirá para hacer la traducción entre el número de la calle que aparezca y el nombre real de la calle.
         0:'FDR N - TBB E 116TH STREET - MANHATTAN TRUSS',
@@ -80,7 +80,7 @@ def create_JSON():
                 for i in range(1,17):
                     hour = df["datetime"].iloc[-i]
                     value = df[column].iloc[-i]
-                    if math.isnan(value) == True:
+                    if math.isnan(value) == True:   #puede ocurrir que no hayan valores reales para una cierta hora en ese momento, por lo que se continuará y no se añadirá
                         continue
                     else:
                         append_predictions_dict[hour] = value

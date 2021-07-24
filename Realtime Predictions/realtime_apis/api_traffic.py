@@ -17,8 +17,7 @@ class ApiTraffic:
 
         date = f"data_as_of>'{start_datetime}'"  #se define la fecha de inicio de la consulta que es la hora solicitada en el realtime
         date = date.replace(" ", "T")
-        # print(date)
-        
+
         columns = "data_as_of, speed, travel_time, link_name"  #columnas solicitadas a la API
 
         #configuración de las columnas a extraer del tráfico y las condiciones

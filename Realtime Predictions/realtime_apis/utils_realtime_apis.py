@@ -60,7 +60,5 @@ class UtilsRealtimeApis():
 
         file = open(file_name, 'w')
         with file:
-            # identifying header  
             writer = csv.DictWriter(file, fieldnames = list)
-            # writing data row-wise into the csv file
             writer.writeheader()

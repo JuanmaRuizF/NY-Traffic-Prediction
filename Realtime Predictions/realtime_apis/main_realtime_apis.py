@@ -192,6 +192,7 @@ class MainRealtimeApis:
         write_weather = df0.loc[df0.datetime == hour_datetime, self.list_weather[1:]]
         if not write_air.isnull().all().all() and not write_weather.isnull().all().all():
             print(f"write - register: {hour_datetime}")
+            print("-"*60)
             df = df0.loc[df0.datetime == hour_datetime]
             # donde se guarda todos los valores de la hora en concreto donde estamos
             file_path = os.getcwd() + "/data/realtime_data/merge_hora.csv"
@@ -230,7 +231,7 @@ class MainRealtimeApis:
 
         """
         """ 2T_W_F: SALTO EN VALORES DE TRÁFICO
-            -- Hay valores de tráfico mayores a la hora consulta pero NO se encontraron coincidencias
+            -- Hay valores de tráfico mayores a la hora consultada pero NO se encontraron coincidencias
                 *return true, no se registran los nuevos valores
             3T_W_F: REGISTRO CORRECTO
             -- Se pasa una lista de valores y se registran cuando @datetime coincida
