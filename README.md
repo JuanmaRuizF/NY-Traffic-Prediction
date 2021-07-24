@@ -33,6 +33,15 @@ Las claves se obtienen del siguiente enlace: https://rapidapi.com/visual-crossin
 
 Es importante tener en cuenta que durante la primera ejecución del main.py se puede demorar sobre 30 minutos, ya que necesita descargar todos los datos históricos, preprocesarlos y crear los modelos para cada una de las calles. Para visualizar las primeras predicciones y valores obtenidos en tiempo real también hay que esperar un poco, ya que necesita hacer varias peticiones de horas pasadas para generar las predicciones.
 
+A la hora de realizar la descarga de datos históricos, puede darse el caso en el que la API de tráfico no funcione/haya sufrido una caída. No es algo que suela ocurrir, pero cuando pasa, la ejecución de la descarga automática se detiene. Si esto ocurre antes de que aparezca el mensaje de confirmación de la finalización de descarga de datos históricos, se deben realizar las siguientes acciones:
+
+- eliminar todos los archivos dentro de /RealtimePredictions/data/historical_data/data_without_merge/air_quality_historical
+- eliminar todos los archivos dentro de /RealtimePredictions/data/historical_data/data_without_merge/traffic_historical
+- eliminar todos los archivos dentro de /RealtimePredictions/data/historical_data/data_without_merge/weather_historical
+- eliminar la carpeta /RealtimePredictions/data/historical_data/merge_historical/2019_2020_2021
+
+Una vez realizado, se puede volver a ejecutar la descarga de los datos. 
+
 ### web-traffic
 
 Este módulo es la página web. Está hecha en React, por lo que se deberá tener React instalado (esto incluye instalar node.js y npm). Una vez se cuente con lo necesario para ejecutar un proyecto en React, seguir los siguientes pasos:
