@@ -11,9 +11,9 @@ class ApiWeather:
         datetime= start_datetime[0:-5] + "00:00"
         #como se hacen bastantes solicitudes a este método porque es ejecutado constantemente en tiempo real, se proporcionan dos keys
         if int(datetime[8:10]) < 15:
-            key = "28acc2b937msh74e1e2c219de97fp1f1a76jsn086758e5a568"
+            key = "e4c85a8e0cmshe09881956e1a190p1378f8jsn220bdf8a34aa"
         else: 
-            key = "083d26d099msh33aabceb4a0369dp1c359ajsnb7cc4c4c1b6f"
+            key = "67b5574712msh40eeee69bc88c02p109000jsn445a58b2afd0"
 
         # obtener los datos de la API según las condiciones específicas (ej:valores de Manhattan)
         url = "https://visual-crossing-weather.p.rapidapi.com/history"

@@ -48,6 +48,9 @@ def main():
         else:
             apisRequest("2019-07-01T00:00:00", 23, "2019_2020_2021")
             location_to_preprocess = historical_data_location + "/merge_historical/2019_2020_2021/historical_data_2019_2020_2021.csv"
+            print("*"*60)
+            print("FIN DESCARGA DE DATOS HISTÓRICOS")
+            print("*"*60)
             PreprocessData(location_to_preprocess, True)
             ModelCreation(unsaved_models)
             realtime_apis.realtime_apis()
