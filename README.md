@@ -9,7 +9,6 @@ Este es el módulo para la obtención de datos, análisis y procesamiento de los
 Además, se hace uso de las siguientes librerías de Python. La instalación se puede hacer con "pip", por lo que deberá ser instalado también:
 - pip install pandas 
 - pip install sodapy
-- pip install IPython
 - pip install tensorflow
 
 Al instalar pandas se instala automáticamente Numpy, dateutil y pytz, por lo que no será necesario instalarlas por separado.
