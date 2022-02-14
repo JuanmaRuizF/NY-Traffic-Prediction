@@ -12,7 +12,7 @@ class HistoricalApiWeather:
         querystring = {"startDateTime":f"{start_datetime}","aggregateHours":"1","location":"Manhattan,NY,USA","endDateTime":f"{end_datetime}","unitGroup":"us","dayStartTime":"0:00:00","contentType":"csv","dayEndTime":"23:59:59","shortColumnNames":"0"}
     
         headers = { #clave con la que hacer las peticiones a la API
-            'x-rapidapi-key': "6efc60ee81mshe91bb314f8f8dc0p1f66f9jsna157b8f2286d",
+            'x-rapidapi-key': "", #ADD KEY FROM https://rapidapi.com/visual-crossing-corporation-visual-crossing-corporation-default/api/visual-crossing-weather/
             'x-rapidapi-host': "visual-crossing-weather.p.rapidapi.com"
             }
         response = requests.request("GET",url, headers=headers, params = querystring)  #respuesta de la API
